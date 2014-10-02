@@ -1,0 +1,7 @@
+{
+    "name": "pesapaljs-exemple",
+    "version": "0.0.1",
+    "dependencies":{
+        "express":"4.x.x"
+    }
+}
