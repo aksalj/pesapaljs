@@ -29,9 +29,25 @@ var sampleOrder = function () {
     return order;
 }
 
-app.get('/payment_listener', PesaPal.parsePaymentNotification, function (req, res) {
+app.get('/payment_listener', PesaPal.listen, function (req, res) {
     var pesapal = req.pesapal;
     require('util').inspect(pesapal);
+});
+
+app.get('/payment_info', function (req, res) {
+    var options = {
+        reference: "DJELK#E@",
+        transaction: "tghjk7689p0"
+    };
+
+    PesaPal.paymentStatus(options, function(error, status) {
+
+    });
+
+    PesaPal.paymentDetails(options, function (error, payment) {
+
+    });
+
 });
 
 app.get('/pesapal_checkout', function (req, res, next) {
