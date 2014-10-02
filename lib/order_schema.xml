@@ -8,6 +8,7 @@
 
     <xsd:element name="PesapalDirectOrderInfo">
         <xsd:complextype>
+
             <xsd:sequence>
                 <xsd:element name="LineItems" minoccurs="0" maxoccurs="1">
                     <xsd:complextype>
