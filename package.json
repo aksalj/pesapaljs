@@ -21,7 +21,8 @@
     }],
 
     "dependencies": {
-        "oauth":"0.9.12"
+        "oauth":"0.9.12",
+        "html-entities":"1.1.1"
 
     },
 

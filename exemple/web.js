@@ -10,9 +10,20 @@
  *  Description :
  *
  */
+var conf = {
+    //demojs demojs@aksalj.me
+    //DemoPassword
+    debug: true,
+    key:"cq4aoP7ROjqsosMYrP2Btftbm4TzHLoK",
+    secret:"O6SQHlUHbIEhINtyUJxRTkCdqvw="
+};
 
+var fs = require('fs');
 var express = require('express');
+var bodyParser = require('body-parser')
 var PesaPal = require('../lib/pesapal');
+
+PesaPal.initialize(conf);
 
 var app = express();
 
@@ -27,7 +38,9 @@ var sampleOrder = function () {
     order.addItem(item_one);
     order.addItem(item_two);
     return order;
-}
+};
+
+app.use(bodyParser.urlencoded({ extended: false }));
 
 app.get('/payment_listener', PesaPal.listen, function (req, res) {
     var pesapal = req.pesapal;
@@ -50,26 +63,32 @@ app.get('/payment_info', function (req, res) {
 
 });
 
-app.get('/pesapal_checkout', function (req, res, next) {
+app.get('/checkout', function (req, res, next) {
 
-    // TODO: Render checkout UI with payment redirecting to PesaPal
+    // TODO: Render checkout UI
+    fs.readFile(__dirname + '/view/checkout.html', 'utf8', function(err, text){
+        res.send(text);
+    });
 
-});
-
-app.get("/custom_checkout", function (req, res, next) {
-    // TODO: Render checkout UI without payment redirecting to PesaPal (custom payment choice UI)
 });
 
 app.post('/checkout', function (req, res, next) {
-    // TODO: Make order from request
+    // TODO: Make order from request; redirect to PesaPal for payment or playaround with pesapal html
     var order = sampleOrder();
-    PesaPal.prepareOrder(order, PesaPal.PaymentMethod.MPesa, function (error, order) {
 
-        // TODO: Save order in DB
 
-        // TODO: Render UI to get mpesa transaction code or card details from user
+    if(req.body.payment == "external") {
+        var paymentURI = PesaPal.getPaymentURL(order);
+        res.redirect(paymentURI);
+    } else if(req.body.payment == "internal") {
+        PesaPal.makeOrder(order, PesaPal.PaymentMethod.MPesa, function (error, order) {
 
-    });
+            // TODO: Save order in DB
+
+            // TODO: Render UI to get mpesa transaction code or card details from user
+
+        });
+    }
 });
 
 app.post('/pay', function (req, res, next) {
