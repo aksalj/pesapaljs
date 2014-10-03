@@ -22,8 +22,8 @@
 
     "dependencies": {
         "oauth":"0.9.12",
-        "html-entities":"1.1.1"
-
+        "oauthsimple":"*",
+        "phpjs":"1.3.2"
     },
 
     "main": "lib/pesapal"

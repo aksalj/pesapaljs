@@ -32,11 +32,12 @@ var sampleOrder = function () {
     customer.firstName = "Kambale";
     customer.lastName = "Kakule";
     var order = new PesaPal.Order("14-dwefew-4243r", customer, "45 Kg Maziwa");
+    order.amount = 150.55;
 
-    var item_one = new PesaPal.Item("sku-de98798", 23, 45.5, "Maziwa");
+    /*var item_one = new PesaPal.Item("sku-de98798", 23, 45.5, "Maziwa");
     var item_two = new PesaPal.Item("sku-de9879d8", 18, 35.5, "Maziwa baridi");
     order.addItem(item_one);
-    order.addItem(item_two);
+    order.addItem(item_two);*/
     return order;
 };
 
@@ -78,7 +79,7 @@ app.post('/checkout', function (req, res, next) {
 
 
     if(req.body.payment == "external") {
-        var paymentURI = PesaPal.getPaymentURL(order);
+        var paymentURI = PesaPal.getPaymentURL(order, "http://localhost:3000/");
         res.redirect(paymentURI);
     } else if(req.body.payment == "internal") {
         PesaPal.makeOrder(order, PesaPal.PaymentMethod.MPesa, function (error, order) {
@@ -86,6 +87,7 @@ app.post('/checkout', function (req, res, next) {
             // TODO: Save order in DB
 
             // TODO: Render UI to get mpesa transaction code or card details from user
+            res.send(order);
 
         });
     }
