@@ -1,3 +1,24 @@
-//
-   Created by aksalj on 10/4/14.
-
+doctype html
+html
+    head
+        title Credit Card Payment
+        meta(name='viewport', content='initial-scale=1')
+        link(rel='stylesheet', href='/static/card.css')
+        link(rel='stylesheet', href='/static/style.css')
+    body
+        .demo-container(style='width: 80%')
+            h1 Make Payment
+            .card-wrapper
+            .form-container.active
+                form(action='/pay')
+                    input(placeholder='Card number', type='text', name='number')
+                    input(placeholder='First Name', type='text', name='first_name')
+                    input(placeholder='Last Name', type='text', name='last_name')
+                    input(placeholder='MM/YY', type='text', name='expiry')
+                    input(placeholder='CVC', type='text', name='cvv')
+                    input(placeholder='KE', type='text', name='country')
+                    input(placeholder='254', type='text', name='country_code')
+                    input(placeholder='71xxxxxxx', type='text', name='phone')
+                    input(type='submit', class='button', value='Pay')
+        script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js')
+        script(src='/static/card.js')

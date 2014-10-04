@@ -1,48 +1,48 @@
-!!! 5
+doctype html
 html
     head
         title Checkout
+        link(rel='stylesheet', href='/static/style.css')
     body
-        form(action='/checkout', method='post')
-            table
-                tr
-                    td Amount:
+        .demo-container
+            h1 Simple Checkout
+            form(action='/checkout', method='post')
+                input(type='hidden', name='reference', value=reference)
+                input(type='hidden', name='type', value='MERCHANT')
+                input(type='hidden', name='amount', value=amount)
+                input(type='hidden', name='currency', value='KES')
+                input(type='hidden', name='description', value=description)
+
+                div(style='text-align:left; padding:20px')
+                    h4 Your order &nbsp;
+                        em="(#" + reference + ")"
+                    div Amount:&nbsp;&nbsp;
+                        b=amount + ' KES'
+                    div Description:&nbsp;&nbsp;
+                        b=description
+
+                div(style='width:80%;padding:30px;')
+                    input(type='text', name='first_name', value='' placeholder='Kambale' required='required')
+                    input(type='text', name='last_name', value='' placeholder='Kakule' required='required')
+                    input(type='text', name='email', value='' placeholder='kaka@pesapal.com' required='required')
+                    input(type='text', name='phone', value='' placeholder='243982828287' required='required')
+
+                table(width='100%')
+                    tr
+                        td
+                            input(type='radio', name='payment', value='internal')
+                            | Custom Payment UI
+                        td
+                            input(type='radio', name='payment', value='external', checked='checked')
+                            | PesaPal Payment UI
+
                     td
-                        input(type='text', name='amount', value='5000')
-                        | (in Kshs)
-                tr
-                    td Type:
-                    td
-                        input(type='text', name='type', value='MERCHANT', readonly='readonly')
-                        | (leave as default - MERCHANT)
-                tr
-                    td Description:
-                    td
-                        input(type='text', name='description', value='Order Description')
-                tr
-                    td Reference:
-                    td
-                        input(type='text', name='reference', value='001')
-                        | (the Order ID )
-                tr
-                    td Shopper's First Name:
-                    td
-                        input(type='text', name='first_name', value='John')
-                tr
-                    td Shopper's Last Name:
-                    td
-                        input(type='text', name='last_name', value='Doe')
-                tr
-                    td Shopper's Email Address:
-                    td
-                        input(type='text', name='email', value='john@yahoo.com')
-                tr
-                    td
-                        input(type='radio', name='payment', value='internal')
-                        | Custom Payment UI
-                    td
-                        input(type='radio', name='payment', value='external', checked='checked')
-                        | PesaPal Payment UI
-                tr
-                    td(colspan='2')
-                        input(type='submit', value='Make Payment')
+                        input(type='radio', name='method', value='mobile')
+                        | Mobile Payment
+                        td
+                            input(type='radio', name='method', value='creditcard', checked='checked')
+                            | Credit Card Payment
+
+                    tr
+                        td(colspan='2', style='text-align:center')
+                            input(type='submit', value='Make Payment', class='button')

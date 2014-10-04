@@ -10,6 +10,10 @@
  *  Description :
  *
  */
+var express = require('express');
+var bodyParser = require('body-parser');
+var PesaPal = require('../lib/pesapal');
+
 var conf = {
     //demojs demojs@aksalj.me
     //DemoPassword
@@ -18,15 +22,11 @@ var conf = {
     secret:"O6SQHlUHbIEhINtyUJxRTkCdqvw="
 };
 
-var express = require('express');
-var bodyParser = require('body-parser');
-var PesaPal = require('../lib/pesapal');
-
 PesaPal.initialize(conf);
 
 var app = express();
 
-var db = function() {
+var DB = function() {
     var orders = {};
     this.set = function (key, order) {
         orders[key] = order;
@@ -39,9 +39,14 @@ var db = function() {
         return null;
     };
 };
+var db = new DB();
 
+app.set('views', __dirname + '/view');
+app.set('view engine', 'jade');
 
 app.use(bodyParser.urlencoded({ extended: false }));
+
+app.use("/static", express.static(__dirname + "/static"));
 
 app.get('/payment_listener', PesaPal.listen, function (req, res) {
     var pesapal = req.pesapal;
@@ -73,7 +78,11 @@ app.get('/payment_details', function (req, res) {
 
 app.get('/checkout', function (req, res, next) {
     // TODO: Render checkout UI
-    res.render("checkout");
+    res.render("checkout", {
+        reference: new Date().getTime(),
+        description: "Order description",
+        amount: Math.floor((Math.random() * 20000) + 1)
+    });
 });
 
 app.post('/checkout', function (req, res, next) {
@@ -97,17 +106,31 @@ app.post('/checkout', function (req, res, next) {
         res.redirect(paymentURI);
 
     } else if(req.body.payment == "internal") { // Use Custom Payment Page
+
+        var mobilePayment = req.body.method == "mobile";
+        var method = mobilePayment ? PesaPal.PaymentMethod.MPesa : PesaPal.PaymentMethod.Visa;
+
         PesaPal.makeMobileOrder(order, function (error, order) {
 
-            // TODO: Save order in DB
-            db.set(order.reference, order);
+            if(error) {
+                res.send(error.message);
+            } else {
 
-            // TODO: Render UI to get mpesa transaction code or card details from user
-            res.render("mobile", {reference:order.reference});
+                // TODO: Save order in DB
+                db.set(order.reference, order);
 
-            //res.render("card", {reference:order.reference});
+                // TODO: Render UI to get mpesa transaction code or card details from user
+                if (mobilePayment) {
+                    res.render("mobile", {
+                        reference: order.reference,
+                        instructions: "Send " + order.amount + " " + order.currency + " to " + method.account + " via " + method.name
+                    });
+                } else {
+                    res.render("card", {reference: order.reference});
+                }
+            }
 
-        }, PesaPal.PaymentMethod.MPesa);
+        }, method);
     }
 });
 
