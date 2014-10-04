@@ -18,7 +18,6 @@ var conf = {
     secret:"O6SQHlUHbIEhINtyUJxRTkCdqvw="
 };
 
-var fs = require('fs');
 var express = require('express');
 var bodyParser = require('body-parser');
 var PesaPal = require('../lib/pesapal');
@@ -26,6 +25,21 @@ var PesaPal = require('../lib/pesapal');
 PesaPal.initialize(conf);
 
 var app = express();
+
+var db = function() {
+    var orders = {};
+    this.set = function (key, order) {
+        orders[key] = order;
+    };
+
+    this.get = function(key) {
+        if(orders.hasOwnProperty(key)){
+            return orders[key];
+        }
+        return null;
+    };
+};
+
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -58,12 +72,8 @@ app.get('/payment_details', function (req, res) {
 });
 
 app.get('/checkout', function (req, res, next) {
-
     // TODO: Render checkout UI
-    fs.readFile(__dirname + '/view/checkout.html', 'utf8', function(err, text){
-        res.send(text);
-    });
-
+    res.render("checkout");
 });
 
 app.post('/checkout', function (req, res, next) {
@@ -87,25 +97,24 @@ app.post('/checkout', function (req, res, next) {
         res.redirect(paymentURI);
 
     } else if(req.body.payment == "internal") { // Use Custom Payment Page
-        PesaPal.makeOrder(order, PesaPal.PaymentMethod.MPesa, function (error, order) {
+        PesaPal.makeMobileOrder(order, function (error, order) {
 
             // TODO: Save order in DB
+            db.set(order.reference, order);
 
             // TODO: Render UI to get mpesa transaction code or card details from user
-            res.send(order);
+            res.render("mobile", {reference:order.reference});
 
-        });
+            //res.render("card", {reference:order.reference});
+
+        }, PesaPal.PaymentMethod.MPesa);
     }
 });
 
 app.post('/pay', function (req, res, next) {
 
     // TODO: Retrieve order from DB
-    var order = sampleOrder();
-    order.payment = {
-        method: PesaPal.PaymentMethod.MPesa,
-        account: "78768234"
-    };
+    var order = db.get(req.body.reference);
 
     var callback = function (error, status) {
         // TODO: Render Success / Error UI
@@ -120,8 +129,8 @@ app.post('/pay', function (req, res, next) {
         case PesaPal.PaymentMethod.Visa:
         case PesaPal.PaymentMethod.MasterCard:
             PesaPal.payCreditCardOrder(order, callback,
-                req.body.holder, req.body.number, req.body.cvv,
-                req.body.month, req.body.year, req.body.country,
+                req.body.first_name, req.body.last_name, req.body.number,
+                req.body.cvv, req.body.month, req.body.year, req.body.country,
                 req.body.country_code, req.body.phone);
             break;
         default :

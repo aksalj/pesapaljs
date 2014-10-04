@@ -23,7 +23,12 @@
     "dependencies": {
         "request": "2.44.0",
         "oauthsimple":"0.0.1",
+        "cheerio":"0.17.0",
         "phpjs":"1.3.2"
+    },
+
+    "devDependencies": {
+        "request-debug":"0.0.3"
     },
 
     "main": "lib/pesapal"

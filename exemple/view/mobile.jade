@@ -1,3 +1,13 @@
-//
-   Created by aksalj on 10/4/14.
-
+!!! 5
+html
+    head(lang='en')
+        meta(charset='UTF-8')
+        title
+    body
+        form(action='/pay', method='post')
+            input(type='hidden', name='reference', value=reference)
+            div
+                input(name='phone', type='text', value='')
+                | Without Country Code
+                input(name='code', type='text', value='')
+            input(type='submit', value='Submit')

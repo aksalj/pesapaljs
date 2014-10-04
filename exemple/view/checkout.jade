@@ -1,3 +1,48 @@
-//
-   Created by aksalj on 10/4/14.
-
+!!! 5
+html
+    head
+        title Checkout
+    body
+        form(action='/checkout', method='post')
+            table
+                tr
+                    td Amount:
+                    td
+                        input(type='text', name='amount', value='5000')
+                        | (in Kshs)
+                tr
+                    td Type:
+                    td
+                        input(type='text', name='type', value='MERCHANT', readonly='readonly')
+                        | (leave as default - MERCHANT)
+                tr
+                    td Description:
+                    td
+                        input(type='text', name='description', value='Order Description')
+                tr
+                    td Reference:
+                    td
+                        input(type='text', name='reference', value='001')
+                        | (the Order ID )
+                tr
+                    td Shopper's First Name:
+                    td
+                        input(type='text', name='first_name', value='John')
+                tr
+                    td Shopper's Last Name:
+                    td
+                        input(type='text', name='last_name', value='Doe')
+                tr
+                    td Shopper's Email Address:
+                    td
+                        input(type='text', name='email', value='john@yahoo.com')
+                tr
+                    td
+                        input(type='radio', name='payment', value='internal')
+                        | Custom Payment UI
+                    td
+                        input(type='radio', name='payment', value='external', checked='checked')
+                        | PesaPal Payment UI
+                tr
+                    td(colspan='2')
+                        input(type='submit', value='Make Payment')
