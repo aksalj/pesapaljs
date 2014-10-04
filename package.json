@@ -1,7 +1,7 @@
 {
     "name": "pesapaljs",
 
-    "version": "0.0.0",
+    "version": "0.0.0a",
 
     "description": "Pesapal API utility",
 
@@ -17,7 +17,7 @@
         "email": "devaksal@gmail.com"
     },
 
-    "keywords": ["pesapal", "mpesa", "mobile money", "airtel", "safaricom", "credit card", "debit card"],
+    "keywords": ["pesapal", "mpesa", "mobile money", "airtel", "safaricom", "credit card", "debit card", "visa", "mastercard", "mtn", "yucash", "zap", "equity", "coop"],
 
     "author": "Salama AB <aksalj@aksalj.me>",
 
