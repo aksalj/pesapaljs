@@ -27,20 +27,6 @@ PesaPal.initialize(conf);
 
 var app = express();
 
-var sampleOrder = function () {
-    var customer = new PesaPal.Customer("kaka@pesapal.com");
-    customer.firstName = "Kambale";
-    customer.lastName = "Kakule";
-    var order = new PesaPal.Order("14-dwefew-4243r", customer, "45 Kg Maziwa");
-    order.amount = 150.55;
-
-    /*var item_one = new PesaPal.Item("sku-de98798", 23, 45.5, "Maziwa");
-    var item_two = new PesaPal.Item("sku-de9879d8", 18, 35.5, "Maziwa baridi");
-    order.addItem(item_one);
-    order.addItem(item_two);*/
-    return order;
-};
-
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.get('/payment_listener', PesaPal.listen, function (req, res) {
@@ -48,18 +34,25 @@ app.get('/payment_listener', PesaPal.listen, function (req, res) {
     require('util').inspect(pesapal);
 });
 
-app.get('/payment_info', function (req, res) {
+app.get('/payment_status', function (req, res) {
     var options = {
-        reference: "DJELK#E@",
-        transaction: "tghjk7689p0"
+        reference: "001",
+        transaction: "175c6485-0948-4cb9-8d72-05a2c3f25be5"
     };
 
-    //PesaPal.paymentStatus(options, function(error, status) {
-    //    res.send({options: options, error: error, status: status});
-    //});
+    PesaPal.paymentStatus(options, function(error, status) {
+        res.send({error: error, status: status});
+    });
+});
+
+app.get('/payment_details', function (req, res) {
+    var options = {
+        reference: "001",
+        transaction: "175c6485-0948-4cb9-8d72-05a2c3f25be5"
+    };
 
     PesaPal.paymentDetails(options, function (error, payment) {
-        res.send({options: options, error: error, payment: payment});
+        res.send({error: error, payment: payment});
     });
 
 });
@@ -74,14 +67,26 @@ app.get('/checkout', function (req, res, next) {
 });
 
 app.post('/checkout', function (req, res, next) {
-    // TODO: Make order from request; redirect to PesaPal for payment or playaround with pesapal html
-    var order = sampleOrder();
+    // TODO: Make order from request;
+    var customer = new PesaPal.Customer(req.body.email, "");
+    customer.firstName = req.body.first_name;
+    customer.lastName = req.body.last_name;
+    var order = new PesaPal.Order(
+        req.body.reference,
+        customer,
+        req.body.description,
+        req.body.amount,
+        "KES",
+        req.body.type);
 
 
-    if(req.body.payment == "external") {
+
+    if(req.body.payment == "external") { // Redirect to PesaPal for payment
+
         var paymentURI = PesaPal.getPaymentURL(order, "http://localhost:3000/");
         res.redirect(paymentURI);
-    } else if(req.body.payment == "internal") {
+
+    } else if(req.body.payment == "internal") { // Use Custom Payment Page
         PesaPal.makeOrder(order, PesaPal.PaymentMethod.MPesa, function (error, order) {
 
             // TODO: Save order in DB
@@ -104,23 +109,20 @@ app.post('/pay', function (req, res, next) {
 
     var callback = function (error, status) {
         // TODO: Render Success / Error UI
+        res.send({error:error, status:status});
     };
 
     switch (order.payment.method) {
         case PesaPal.PaymentMethod.MPesa:
         case PesaPal.PaymentMethod.Airtel:
-            var code = "EDWDWDWQD"; // From post body
-            PesaPal.makeOrder(order, callback, code, null);
+            PesaPal.payMobileOrder(order, callback, req.body.phone, req.body.code);
             break;
-        case PesaPal.PaymentMethod.BankCard:
-            var card = { // From post body
-                holder: "John Doe",
-                number: "421000000000212",
-                cvv: "456",
-                expires: "09/18"
-            };
-
-            PesaPal.makeOrder(order, callback, null, card);
+        case PesaPal.PaymentMethod.Visa:
+        case PesaPal.PaymentMethod.MasterCard:
+            PesaPal.payCreditCardOrder(order, callback,
+                req.body.holder, req.body.number, req.body.cvv,
+                req.body.month, req.body.year, req.body.country,
+                req.body.country_code, req.body.phone);
             break;
         default :
             // Error ?
