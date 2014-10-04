@@ -5,7 +5,7 @@
 
     "description": "Pesapal API utility",
 
-    "homepage": "http://github.com/aksalj/pesapaljs",
+    "homepage": "https://github.com/aksalj/pesapaljs",
 
     "repository": {
         "type": "git",
@@ -21,8 +21,8 @@
     }],
 
     "dependencies": {
-        "oauth":"0.9.12",
-        "oauthsimple":"*",
+        "request": "2.44.0",
+        "oauthsimple":"0.0.1",
         "phpjs":"1.3.2"
     },
 

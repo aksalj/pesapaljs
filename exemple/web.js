@@ -20,7 +20,7 @@ var conf = {
 
 var fs = require('fs');
 var express = require('express');
-var bodyParser = require('body-parser')
+var bodyParser = require('body-parser');
 var PesaPal = require('../lib/pesapal');
 
 PesaPal.initialize(conf);
@@ -54,12 +54,12 @@ app.get('/payment_info', function (req, res) {
         transaction: "tghjk7689p0"
     };
 
-    PesaPal.paymentStatus(options, function(error, status) {
-
-    });
+    //PesaPal.paymentStatus(options, function(error, status) {
+    //    res.send({options: options, error: error, status: status});
+    //});
 
     PesaPal.paymentDetails(options, function (error, payment) {
-
+        res.send({options: options, error: error, payment: payment});
     });
 
 });
