@@ -12,6 +12,11 @@
         "url": "https://github.com/aksalj/pesapaljs"
     },
 
+    "bugs": {
+        "url": "https://github.com/aksalj/pesapaljs/issues",
+        "email": "devaksal@gmail.com"
+    },
+
     "keywords": ["pesapal", "mpesa", "mobile money", "airtel", "safaricom", "credit card", "debit card"],
 
     "author": "Salama AB <aksalj@aksalj.me>",
