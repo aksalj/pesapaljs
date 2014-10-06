@@ -1,22 +1,22 @@
-##PesapalJS
+## PesapalJS
 
 [![NPM](https://nodei.co/npm/pesapaljs.png?downloads=true&downloadRank=true&stars=true)](https://www.npmjs.org/package/pesapaljs)
 
 ######Important: This code is not ready for production use!!
 
-###Goal
+### Goal
 
 Make it easy to integrate [PesaPal](https://www.pesapal.com) into a website or mobile app AND most importantly allow one 
 to customize the payment user interface.
 
-###Features
+### Features
 
 - Prepare signed URL for payment page.
-- Custom payment page
+- Custom payment page.
 
-###Usage summary
+### Usage summary
 
-######Setup
+###### Setup
 ```javascript
 
 var PesaPal = require('pesapaljs');
@@ -24,7 +24,7 @@ PesaPal.initialize({key: CONSUMER_KEY, secret: CONSUMER_SECRET});
 
 ```
     
-######Listen for payment notifications
+###### Listen for payment notifications
 ```javascript
 
 // Listen for IPNs (With an express app)
@@ -42,7 +42,7 @@ app.get('/ipn', function(req, res) {
 
 ```
     
-######Check Payment info
+###### Check Payment info
 ```javascript
 
 var options = {
@@ -60,7 +60,7 @@ PesaPal.paymentDetails(options, function (error, payment) {
 
 ```
     
-######Make a direct order
+###### Make a direct order
 Make your customer pay on PesaPal's page:
 
 ```javascript
@@ -92,3 +92,9 @@ PesaPal.makeOrder(order, PesaPal.PaymentMethod.Airtel, function(error, order) {
     });
 });
 ```
+
+### Contributing
+
+1. Fork this repo and make changes in your own fork.
+2. Commit your changes and push to your fork `git push origin master`
+3. Create a new pull request and submit it back to the project.
