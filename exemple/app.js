@@ -48,9 +48,15 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use("/static", express.static(__dirname + "/static"));
 
-app.get('/payment_listener', PesaPal.listen, function (req, res) {
-    var pesapal = req.pesapal;
-    require('util').inspect(pesapal);
+app.get('/payment_listener', function (req, res) {
+    var options = {
+        transaction: req.query(PesaPal.getQueryKey('transaction')),
+        reference: req.query(PesaPal.getQueryKey('reference'))
+    };
+
+    PesaPal.paymentDetails(options, function(error, payment) {
+        res.send({error: error, payment: payment});
+    });
 });
 
 app.get('/payment_status', function (req, res) {
@@ -179,7 +185,7 @@ app.post('/pay', function (req, res, next) {
     }
 
     if(paymentData != null) {
-        PesaPal.payOrder(order, callback, paymentData);
+        PesaPal.payOrder(order, paymentData, callback);
     } else {
         res.render("message", {message: "Error!!!"});
     }

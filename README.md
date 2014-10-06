@@ -25,10 +25,16 @@ PesaPal.initialize({key: CONSUMER_KEY, secret: CONSUMER_SECRET});
 ######Listen for payment notifications
 ```javascript
 // Listen for IPNs (With an express app)
-app.get('/ipn', PesaPal.listen, function(req, res){ 
-    var error = req.pesapal.error;
-    var payment = req.pesapal.payment; // {transaction, method, status, reference}
-    // do shit 
+app.get('/ipn', function(req, res) { 
+    var options = {
+        transaction: req.query(PesaPal.getQueryKey('transaction')),
+        reference: req.query(PesaPal.getQueryKey('reference'))
+    };
+    
+    PesaPal.paymentDetails(options, function(error, payment) {
+        // payment -> {transaction, method, status, reference}
+        // do shit
+    });
 });
 ```
     
@@ -43,7 +49,7 @@ PesaPal.paymentStatus(options, function(error, status}{
 });
 
 PesaPal.paymentDetails(options, function (error, payment) {
-    //payment {transaction, method, status, reference}
+    //payment -> {transaction, method, status, reference}
     //do shit
 });
 ```
@@ -58,12 +64,11 @@ var url = PesaPal.getPaymentURL(order, "http://mysite.co.ke/callback");
 // send it to an iframe ?
 
 // or place order directly with your own UI
-PesaPal.makeOrder(order, callback, PesaPal.PaymentMethod.MPesa);
-
-    //... in your callback render a UI to collect payment details (web or mobile)
-
-//... then somewhere in your callback after you've collected card details 
-//      (or mobile money transaction code)
-var mobileMoney = new PesaPal.MobileMoney("254718988983", "FRTSFTTY56");
-PesaPal.payOrder(order, anotherCallback,  mobileMoney);
+PesaPal.makeOrder(order, PesaPal.PaymentMethod.MPesa, function(error, order) {
+    // Get payment details from user, db or wherever
+    
+    PesaPal.payOrder(order, new PesaPal.MobileMoney("254718988983","FRTSFTTY56"), function (error, reference, transactionId) {
+        // do shit
+    });
+});
 ```
