@@ -14,35 +14,27 @@ html
                 input(type='hidden', name='description', value=description)
 
                 div(style='text-align:left; padding:20px')
-                    h4 Your order &nbsp;
+                    h4 Order &nbsp;
                         em="(#" + reference + ")"
                     div Amount:&nbsp;&nbsp;
                         b=amount + ' KES'
                     div Description:&nbsp;&nbsp;
                         b=description
 
-                div(style='width:80%;padding:30px;')
-                    input(type='text', name='first_name', value='' placeholder='Kambale' required='required')
-                    input(type='text', name='last_name', value='' placeholder='Kakule' required='required')
-                    input(type='text', name='email', value='' placeholder='kaka@pesapal.com' required='required')
-                    input(type='text', name='phone', value='' placeholder='243982828287' required='required')
+                div(style='text-align:left;')
+                    h4 Customer Details
+                    input(type='text', name='first_name', value='' placeholder='First Name' required='required')
+                    input(type='text', name='last_name', value='' placeholder='Last Name' required='required')
+                    input(type='email', name='email', value='' placeholder='Email' required='required')
+                    input(type='text', name='phone', value='' placeholder='Phone Number' required='required')
 
-                table(width='100%')
+                table(width='50%', align='center')
                     tr
                         td
-                            input(type='radio', name='payment', value='internal')
-                            | Custom Payment UI
-                        td
-                            input(type='radio', name='payment', value='external', checked='checked')
-                            | PesaPal Payment UI
+                            input(type='submit', value='Mobile Payment', class='button', name='mobile')
 
-                    td
-                        input(type='radio', name='method', value='mobile')
-                        | Mobile Payment
                         td
-                            input(type='radio', name='method', value='creditcard', checked='checked')
-                            | Credit Card Payment
+                            input(type='submit', value='Credit Card Payment', class='button', name='credit_card')
 
-                    tr
-                        td(colspan='2', style='text-align:center')
-                            input(type='submit', value='Make Payment', class='button')
+                        td
+                            input(type='submit', value='Payment on PesaPal', class='button', name='pesapal')

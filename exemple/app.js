@@ -76,6 +76,17 @@ app.get('/payment_details', function (req, res) {
 
 });
 
+app.get('/payment_callback', function (req, res) {
+    var options = { // Assumes pesapal calls back with a transaction id and reference
+        reference: req.query.pesapal_transaction_tracking_id,
+        transaction: req.query.pesapal_merchant_reference
+    };
+
+    PesaPal.paymentDetails(options, function (error, payment) {
+        res.send({error: error, payment: payment});
+    });
+});
+
 app.get('/checkout', function (req, res, next) {
     // TODO: Render checkout UI
     res.render("checkout", {
@@ -100,14 +111,14 @@ app.post('/checkout', function (req, res, next) {
 
 
 
-    if(req.body.payment == "external") { // Redirect to PesaPal for payment
+    if(req.body.pesapal) { // Redirect to PesaPal for payment
 
-        var paymentURI = PesaPal.getPaymentURL(order, "http://localhost:3000/");
+        var paymentURI = PesaPal.getPaymentURL(order, "http://localhost:3000/payment_callback");
         res.redirect(paymentURI);
 
-    } else if(req.body.payment == "internal") { // Use Custom Payment Page
+    } else { // Use Custom Payment Page
 
-        var mobilePayment = req.body.method == "mobile";
+        var mobilePayment = req.body.mobile != undefined;
         var method = mobilePayment ? PesaPal.PaymentMethod.MPesa : PesaPal.PaymentMethod.Visa;
 
         PesaPal.makeMobileOrder(order, function (error, order) {
@@ -144,7 +155,9 @@ app.post('/pay', function (req, res, next) {
         res.send({error:error, status:status});
     };
 
-    switch (order.payment.method) {
+    PesaPal.payOrder(order, callback, {}, {}); // callback, mobile, card
+
+    switch (order.paymentMethod) {
         case PesaPal.PaymentMethod.MPesa:
         case PesaPal.PaymentMethod.Airtel:
             PesaPal.payMobileOrder(order, callback, req.body.phone, req.body.code);
