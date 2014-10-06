@@ -110,7 +110,6 @@ app.post('/checkout', function (req, res, next) {
         req.body.type);
 
 
-
     if(req.body.pesapal) { // Redirect to PesaPal for payment
 
         var paymentURI = PesaPal.getPaymentURL(order, "http://localhost:3000/payment_callback");
@@ -121,7 +120,7 @@ app.post('/checkout', function (req, res, next) {
         var mobilePayment = req.body.mobile != undefined;
         var method = mobilePayment ? PesaPal.PaymentMethod.MPesa : PesaPal.PaymentMethod.Visa;
 
-        PesaPal.makeMobileOrder(order, function (error, order) {
+        PesaPal.makeOrder(order, method, function (error, order) {
 
             if(error) {
                 res.send(error.message);
@@ -141,7 +140,7 @@ app.post('/checkout', function (req, res, next) {
                 }
             }
 
-        }, method);
+        });
     }
 });
 
@@ -150,29 +149,39 @@ app.post('/pay', function (req, res, next) {
     // TODO: Retrieve order from DB
     var order = db.get(req.body.reference);
 
-    var callback = function (error, status) {
+    var callback = function (error, reference, transactionId) {
         // TODO: Render Success / Error UI
-        res.send({error:error, status:status});
+        var message = transactionId == null ? error.message : "Thank you for doing business with us";
+        res.render("message", {message: message})
     };
 
-    PesaPal.payOrder(order, callback, {}, {}); // callback, mobile, card
+    var paymentData = null;
 
     switch (order.paymentMethod) {
         case PesaPal.PaymentMethod.MPesa:
         case PesaPal.PaymentMethod.Airtel:
-            PesaPal.payMobileOrder(order, callback, req.body.phone, req.body.code);
+            paymentData = new PesaPal.MobileMoney(req.body.phone, req.body.code);
             break;
         case PesaPal.PaymentMethod.Visa:
         case PesaPal.PaymentMethod.MasterCard:
-            PesaPal.payCreditCardOrder(order, callback,
-                req.body.first_name, req.body.last_name, req.body.number,
-                req.body.cvv, req.body.month, req.body.year, req.body.country,
-                req.body.country_code, req.body.phone);
+            paymentData = new PesaPal.Card();
+            paymentData.firstName = req.body.first_name;
+            paymentData.lastName = req.body.last_name;
+            paymentData.number = req.body.number;
+            paymentData.cvv = req.body.cvv;
+            paymentData.expirationMonth = req.body.month;
+            paymentData.expirationYear = req.body.year;
+            paymentData.country = req.body.country;
+            paymentData.countryCode = req.body.country_code;
+            paymentData.phone = req.body.phone;
+            paymentData.email = req.body.email;
             break;
-        default :
-            // Error ?
-            res.send("Error");
+    }
 
+    if(paymentData != null) {
+        PesaPal.payOrder(order, callback, paymentData);
+    } else {
+        res.render("message", {message: "Error!!!"});
     }
 
 });

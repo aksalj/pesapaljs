@@ -45,5 +45,7 @@ to customize the payment user interface.
     
         //... in your callback render a UI to collect payment details (web or mobile)
     
-    //... then somewhere in your callback after you've collected card details (or mobile money transaction code)
-    PesaPal.payOrder(order, anotherCallback,  {code:"FRTSFTTY56", phone: "71898998983"}, null);
+    //... then somewhere in your callback after you've collected card details 
+    //      (or mobile money transaction code)
+    var mobileMoney = new PesaPal.MobileMoney("254718988983", "FRTSFTTY56");
+    PesaPal.payOrder(order, anotherCallback,  mobileMoney);
