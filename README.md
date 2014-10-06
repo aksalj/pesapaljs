@@ -2,25 +2,25 @@
 
 [![NPM](https://nodei.co/npm/pesapaljs.png?downloads=true&downloadRank=true&stars=true)](https://www.npmjs.org/package/pesapaljs)
 
-#####Important: This code is not ready for production use!!
+######Important: This code is not ready for production use!!
 
-######Goal
+###Goal
 
 Make it easy to integrate [PesaPal](https://www.pesapal.com) into a website or mobile app AND most importantly allow one 
 to customize the payment user interface.
 
-######Features
+###Features
 
 - Prepare signed URL for payment page.
 - Custom payment page
 
-####Usage summary
+###Usage summary
 
-#####Setup
+######Setup
     var PesaPal = require('pesapaljs');
     PesaPal.initialize({key: CONSUMER_KEY, secret: CONSUMER_SECRET});
     
-#####Listen for payment notifications
+######Listen for payment notifications
     
     // Listen for IPNs (With an express app)
     app.get('/ipn', PesaPal.listen, function(req, res){ 
@@ -29,15 +29,24 @@ to customize the payment user interface.
         // do shit 
     });
     
-#####Check Payment info
+######Check Payment info
+    var options = {
+        reference: "42314123", // Send this
+        transaction: "175c6485-0948-4cb9-8d72-05a2c3f25be5" // or this or both.
+    };
+    PesaPal.paymentStatus(options, function(error, status}{
+        // do shit
+    });
     
-    PesaPal.paymentStatus({reference:"REF78D"}, callback);
-    PesaPal.paymentDetails({reference:"REF78D"}, callback);
+    PesaPal.paymentDetails(options, function (error, payment) {
+        //payment {transaction, method, status, reference}
+        //do shit
+    });
     
-#####Make a direct order
+######Make a direct order
     
     var customer = new PesaPal.Customer("kariuki@pesapal.com");
-    var order = new PesaPal.Order("REF78D", customer, "Ma ndazi", 1679.50, "KES", "MERCHANT");
+    var order = new PesaPal.Order("42314123", customer, "Ma ndazi", 1679.50, "KES", "MERCHANT");
     
     // Redirect user to PesaPal
     var url = PesaPal.getPaymentURL(order, "http://mysite.co.ke/callback");
