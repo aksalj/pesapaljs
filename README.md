@@ -14,31 +14,34 @@ to customize the payment user interface.
 - Prepare signed URL for payment page.
 - Custom payment page
 
-######Usage summary
+####Usage summary
+
+#####Setup
     var PesaPal = require('pesapaljs');
     PesaPal.initialize({key: CONSUMER_KEY, secret: CONSUMER_SECRET});
     
-    // Listen for payment notifications (With an express app)
+#####Listen for payment notifications
+    
+    // Listen for IPNs (With an express app)
     app.get('/ipn', PesaPal.listen, function(req, res){ 
         var error = req.pesapal.error;
         var payment = req.pesapal.payment; // {transaction, method, status, reference}
         // do shit 
     });
     
-    // ...
+#####Check Payment info
     
-    // Payment Info
     PesaPal.paymentStatus({reference:"REF78D"}, callback);
     PesaPal.paymentDetails({reference:"REF78D"}, callback);
     
-    // ...
+#####Make a direct order
     
-    // Direct order
     var customer = new PesaPal.Customer("kariuki@pesapal.com");
     var order = new PesaPal.Order("REF78D", customer, "Ma ndazi", 1679.50, "KES", "MERCHANT");
     
     // Redirect user to PesaPal
     var url = PesaPal.getPaymentURL(order, "http://mysite.co.ke/callback");
+    // send it to an iframe ?
     
     // or place order directly with your own UI
     PesaPal.makeOrder(order, callback, PesaPal.PaymentMethod.MPesa);
