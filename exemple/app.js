@@ -13,6 +13,7 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var PesaPal = require('../lib/pesapal');
+var db = require("./database");
 
 var conf = {
     //demojs demojs@aksalj.me
@@ -25,21 +26,6 @@ var conf = {
 PesaPal.initialize(conf);
 
 var app = express();
-
-var DB = function() {
-    var orders = {};
-    this.set = function (key, order) {
-        orders[key] = order;
-    };
-
-    this.get = function(key) {
-        if(orders.hasOwnProperty(key)){
-            return orders[key];
-        }
-        return null;
-    };
-};
-var db = new DB();
 
 app.set('views', __dirname + '/view');
 app.set('view engine', 'jade');
@@ -133,7 +119,7 @@ app.post('/checkout', function (req, res, next) {
             } else {
 
                 // TODO: Save order in DB
-                db.set(order.reference, order);
+                db.saveOrder(order);
 
                 // TODO: Render UI to get mpesa transaction code or card details from user
                 if (mobilePayment) {
@@ -153,17 +139,18 @@ app.post('/checkout', function (req, res, next) {
 app.post('/pay', function (req, res, next) {
 
     // TODO: Retrieve order from DB
-    var order = db.get(req.body.reference);
+    var order = db.getOrder(req.body.reference);
 
     var callback = function (error, reference, transactionId) {
         // TODO: Render Success / Error UI
-        var message = transactionId == null ? error.message : "Thank you for doing business with us";
-        res.render("message", {message: message})
+        // TODO: Save transaction id for conformation when I get an IPN
+        var message = transactionId == null ? error.message : "Thank you for doing business with us.";
+        res.render("message", {message: message});
     };
 
     var paymentData = null;
 
-    switch (order.paymentMethod) {
+    switch (order.getPaymentMethod()) {
         case PesaPal.PaymentMethod.MPesa:
         case PesaPal.PaymentMethod.Airtel:
             paymentData = new PesaPal.MobileMoney(req.body.phone, req.body.code);
@@ -175,13 +162,15 @@ app.post('/pay', function (req, res, next) {
             paymentData.lastName = req.body.last_name;
             paymentData.number = req.body.number;
             paymentData.cvv = req.body.cvv;
-            paymentData.expirationMonth = req.body.month;
-            paymentData.expirationYear = req.body.year;
+            paymentData.expirationMonth = (req.body.expiry.split('/') [0]).trim();
+            paymentData.expirationYear = (req.body.expiry.split('/') [1]).trim();
             paymentData.country = req.body.country;
             paymentData.countryCode = req.body.country_code;
             paymentData.phone = req.body.phone;
             paymentData.email = req.body.email;
             break;
+        default:
+            throw new Error("Invalid order");
     }
 
     if(paymentData != null) {
