@@ -9,10 +9,12 @@
 Make it easy to integrate [PesaPal](https://www.pesapal.com) into a website or mobile app AND most importantly allow one 
 to customize the payment user interface.
 
-### Features
-
-- Prepare signed URL for payment page.
-- Custom payment page.
+### Core Features
+- `.paymentStatus(options, callback)` : Get status of a payment.
+- `.paymentDetails(options, callback`: Get all information about a payment.
+- `.getPaymentURL(order, callbackURI)`: Get a signed URL to the PesaPal payment page.
+- `.makeOrder(order, paymentMethod, callback)`: Prepare an order for payment on a custom UI.
+- `.payOrder(order, paymentDetails, callback)`: Pay an order with details collected through a custom UI.
 
 ### Usage summary
 
