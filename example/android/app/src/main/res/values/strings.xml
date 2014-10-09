@@ -2,7 +2,8 @@
 <resources>
 
     <string name="app_name">PesaPalJS</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+
+    <string name="amount">%.2f KES</string>
+    <string name="description">His etiam oratio noster ut, omnis volumus eam ex, lorem virtute in vix. Ex est impetus petentium conceptam, id eam ferri malorum scaevola. Nam eu vocibus insolens atomorum. Atqui principes mei et, pro reque similique ex, iuvaret insolens no ius. Case ipsum nonumes mea eu, ex inermis menandri legendos vis. Error facete nam cu, cum graecis feugait evertitur cu, cum an ludus pertinax consequuntur. Prima suscipit sea cu.</string>
 
 </resources>

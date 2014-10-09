@@ -9,7 +9,7 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name=".Home"
-            android:label="@string/app_name" >
+            android:label="PesaPalJS - Checkout" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

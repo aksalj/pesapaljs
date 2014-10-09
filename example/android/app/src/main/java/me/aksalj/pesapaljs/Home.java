@@ -4,33 +4,57 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.TextView;
+
+import java.math.BigInteger;
+import java.security.SecureRandom;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
 
 
 public class Home extends Activity {
+
+    private SecureRandom mRandom = new SecureRandom();
+
+    String mReference = null;
+    float mAmount = 0.0f;
+    String mDescription = "";
+
+    @InjectView(R.id.reference)
+    TextView mReferenceTextView;
+
+    @InjectView(R.id.amount)
+    TextView mAmountTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        ButterKnife.inject(this);
+
+        mReference = new BigInteger(130, mRandom).toString(32);
+        mAmount = mRandom.nextFloat() * 50000;
+        mDescription = getString(R.string.description);
+
+        mReferenceTextView.setText(mReference.toUpperCase());
+        mAmountTextView.setText(getString(R.string.amount, mAmount));
+
     }
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.home, menu);
-        return true;
+
+    @OnClick(R.id.custom)
+    public void onCustomPayment(){
+
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+    @OnClick(R.id.pesapal)
+    public void onPesaPalPayment() {
+
     }
+
 }
