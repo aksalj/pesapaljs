@@ -13,6 +13,7 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var PesaPal = require('../../lib/pesapal');
+var api = require('./api');
 var db = require("./database");
 
 var conf = {
@@ -31,6 +32,9 @@ app.set('views', __dirname + '/view');
 app.set('view engine', 'jade');
 
 app.use(bodyParser.urlencoded({ extended: false }));
+
+// Serve our android app
+api(app, PesaPal);
 
 app.use("/static", express.static(__dirname + "/static"));
 

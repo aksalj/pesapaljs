@@ -17,37 +17,39 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Order Reference:"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="10dp"
-        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="456789134234"
+        android:textSize="12sp"
         android:textColor="#ccc"
         android:id="@+id/reference"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Amount"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="10dp"
-        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="12,987.50 KES"
+        android:textSize="12sp"
         android:textColor="#ccc"
         android:id="@+id/amount"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Description"/>
 
     <TextView
@@ -57,6 +59,7 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="@string/description"
         android:textColor="#ccc"
+        android:textSize="12sp"
         android:maxLines="3"
         android:ellipsize="end"
         android:id="@+id/description"/>
@@ -70,8 +73,9 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Customer Details"/>
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Customer Details"
+        android:paddingBottom="10dp"/>
 
 
     <LinearLayout
@@ -86,6 +90,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPersonName"
+            android:text="Kariuki"
             android:hint="First Name"
             android:ems="10"
             android:id="@+id/firstName" />
@@ -95,6 +100,7 @@
             android:layout_height="wrap_content"
             android:inputType="textPersonName"
             android:hint="Last Name"
+            android:text="Njeri"
             android:ems="10"
             android:id="@+id/lastName" />
 
@@ -102,7 +108,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textEmailAddress"
-            android:hint="kariuki@pesapal.com"
+            android:hint="Email"
+            android:text="kariuki@pesapal.com"
             android:ems="10"
             android:id="@+id/email" />
 
@@ -110,7 +117,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="phone"
-            android:hint="254-718998765"
+            android:hint="Phone"
+            android:text="254718998765"
             android:ems="10"
             android:id="@+id/phone" />
 
@@ -119,8 +127,9 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Payment"/>
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Payment"
+        android:paddingBottom="10dp"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -131,9 +140,8 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="In-App"
-            android:id="@+id/custom"
-            android:enabled="false"/>
+            android:text="In App"
+            android:id="@+id/custom"/>
 
         <Button
             android:layout_width="0dp"

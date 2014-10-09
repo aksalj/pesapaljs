@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:id="@+id/mobile">
+        <item
+            android:id="@+id/mpesa"
+            android:title="MPesa"/>
+        <item
+            android:id="@+id/airtel"
+            android:title="Airtel"/>
+    </group>
+
+    <group android:id="@+id/credit_card">
+        <item
+            android:id="@+id/visa"
+            android:title="Visa"/>
+        <item
+            android:id="@+id/mastercard"
+            android:title="MasterCard"/>
+    </group>
+
+</menu>
