@@ -12,7 +12,7 @@
  */
 var express = require('express');
 var bodyParser = require('body-parser');
-var PesaPal = require('../lib/pesapal');
+var PesaPal = require('../../lib/pesapal');
 var db = require("./database");
 
 var conf = {
