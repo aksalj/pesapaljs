@@ -31,6 +31,14 @@ public interface WebService {
         String url;
     }
 
+    class OrderResult {
+        String reference;
+    }
+
+    class PaymentResult {
+        String reference, transaction;
+    }
+
 
     @GET("/payment_status/{reference}")
     PaymentStatus getPaymentStatus(@Path("reference") String reference);
@@ -39,9 +47,40 @@ public interface WebService {
     PaymentDetails getPaymentDetails(@Path("reference") String reference);
 
 
-    @POST("/make_payment")
-    String makePayment();
+    @FormUrlEncoded
+    @POST("/make_order")
+    OrderResult makeOrder(
+            @Field("reference") String reference,
+            @Field("type") String type,
+            @Field("amount") float amount,
+            @Field("currency") String currency,
+            @Field("description") String description,
+            @Field("firstName") String firstName,
+            @Field("lastName") String lastName,
+            @Field("email") String email,
+            @Field("phone") String phone,
+            @Field("method") String method);
 
+    @FormUrlEncoded
+    @POST("/pay_order")
+    PaymentResult payMobileOrder(
+            @Field("reference") String reference,
+            @Field("phone") String phone,
+            @Field("code") String code);
+
+    @FormUrlEncoded
+    @POST("/pay_order")
+    PaymentResult payCreditCardOrder(
+            @Field("reference") String reference,
+            @Field("first_name") String first_name,
+            @Field("last_name") String last_name,
+            @Field("number") String cardNumber,
+            @Field("cvv") String cardSecurity,
+            @Field("expiry") String cardExpiry,
+            @Field("country") String country,
+            @Field("country_code") String countryCode,
+            @Field("phone") String phone,
+            @Field("email") String email);
 
     @FormUrlEncoded
     @POST("/payment_url")

@@ -2,23 +2,14 @@ package me.aksalj.pesapaljs;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.util.Log;
 import android.view.ContextMenu;
-import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
@@ -60,7 +51,7 @@ public class Home extends Activity {
     @InjectView(R.id.custom)
     Button btnInAppPayment;
 
-    ProgressDialog mProgressDialog;
+    public ProgressDialog mProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,18 +102,21 @@ public class Home extends Activity {
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         switch (item.getItemId()) {
-            case R.id.mpesa: // TODO: Make order & Show receipt collection UI
+            case R.id.mpesa:
+                new OrderWorker(this, "mpesa").execute();
+                break;
             case R.id.airtel:
-
-            case R.id.visa: // TODO: Make order & Show card info collection UI
+                new OrderWorker(this, "airtel").execute();
+                break;
+            case R.id.visa:
+                new OrderWorker(this, "visa").execute();
+                break;
             case R.id.mastercard:
-
-            default:
-                Toast.makeText(this, "Not implemented!", Toast.LENGTH_SHORT).show();
-                return super.onContextItemSelected(item);
+                new OrderWorker(this, "mastercard").execute();
+                break;
         }
+        return super.onContextItemSelected(item);
     }
 
     @OnClick(R.id.custom)
@@ -132,69 +126,7 @@ public class Home extends Activity {
 
     @OnClick(R.id.pesapal)
     public void onPesaPalPayment() {
-        new URLFetcher().execute();
-    }
-
-    class URLFetcher extends AsyncTask<Void, Void, WebService.PaymentURL> {
-
-        boolean firstLoad = true;
-        String callbackURI = "file:///android_asset/callback.html";
-
-
-        @Override
-        protected void onPostExecute(WebService.PaymentURL payment) {
-            // TODO: Open URL in webview
-            final WebDialog dialog = new WebDialog(Home.this, payment.url);
-            dialog.enableJavascript(true);
-            dialog.setWebViewClient(new WebViewClient(){
-                @Override
-                public void onPageFinished(WebView view, String url) {
-                    super.onPageFinished(view, url);
-                    if(firstLoad) {
-                        mProgressDialog.cancel();
-                        dialog.show();
-                        firstLoad = false;
-                    }
-                }
-
-                @Override
-                public boolean shouldOverrideUrlLoading(WebView view, String url) {
-
-                    // TODO: Check redirect URL for order transaction id and reference
-                    Log.i("Payment Page Redirect", url);
-
-
-                    // KitKat WebView won't redirect to file:/// ???
-
-                    view.loadUrl(url);
-                    return true;
-                }
-            });
-
-        }
-
-        @Override
-        protected void onPreExecute() {
-            mProgressDialog.show();
-        }
-
-        @Override
-        protected WebService.PaymentURL doInBackground(Void... voids) {
-            try {
-                return mService.getPaymentURL (mReference, "MERCHANT", mAmount, "KES",
-                        mDescription, txtFirstName.getText().toString(),
-                        txtLastName.getText().toString(),
-                        txtEmail.getText().toString(),
-                        txtPhone.getText().toString(),
-                        callbackURI
-                );
-
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-
-            return null;
-        }
+        new URLWorker(this).execute();
     }
 
 }
