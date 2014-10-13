@@ -30,10 +30,10 @@ exports = module.exports = function (app, PesaPal) {
         return order;
     };
 
-    app.get('/payment_status/:reference', function (req, res) {
-        var options = {
-            reference: req.params.reference
-        };
+    app.get('/payment_status', function (req, res) {
+        var options = {};
+        if(req.query.reference) options.reference = req.query.reference;
+        if(req.query.transaction) options.transaction = req.query.transaction;
 
         PesaPal.paymentStatus(options, function(error, status) {
             if(error) {
@@ -44,10 +44,11 @@ exports = module.exports = function (app, PesaPal) {
         });
     });
 
-    app.get('/payment_details/:reference', function (req, res) {
-        var options = {
-            reference: req.params.reference
-        };
+    app.get('/payment_details', function (req, res) {
+        var options = {};
+        if(req.query.reference) options.reference = req.query.reference;
+        if(req.query.transaction) options.transaction = req.query.transaction;
+
 
         PesaPal.paymentDetails(options, function (error, payment) {
             if(error) {

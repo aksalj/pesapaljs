@@ -49,28 +49,6 @@ app.get('/payment_listener', function (req, res) {
     });
 });
 
-app.get('/payment_status', function (req, res) {
-    var options = {
-        reference: "001",
-        transaction: "175c6485-0948-4cb9-8d72-05a2c3f25be5"
-    };
-
-    PesaPal.paymentStatus(options, function(error, status) {
-        res.send({error: error, status: status});
-    });
-});
-
-app.get('/payment_details', function (req, res) {
-    var options = {
-        reference: "001",
-        transaction: "175c6485-0948-4cb9-8d72-05a2c3f25be5"
-    };
-
-    PesaPal.paymentDetails(options, function (error, payment) {
-        res.send({error: error, payment: payment});
-    });
-
-});
 
 app.get('/payment_callback', function (req, res) {
     var options = { // Assumes pesapal calls back with a transaction id and reference
