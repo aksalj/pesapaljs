@@ -40,8 +40,8 @@ app.use("/static", express.static(__dirname + "/static"));
 
 app.get('/payment_listener', function (req, res) {
     var options = {
-        transaction: req.query(PesaPal.getQueryKey('transaction')),
-        reference: req.query(PesaPal.getQueryKey('reference'))
+        transaction: req.query[PesaPal.getQueryKey('transaction')],
+        reference: req.query[PesaPal.getQueryKey('reference')]
     };
 
     PesaPal.paymentDetails(options, function(error, payment) {
