@@ -39,7 +39,7 @@ When the `debug` option is set, `pesapaljs` will use the `demo.pesapal.com/*` en
 // Listen for IPNs (With an express app)
 app.get('/ipn', PesaPal.paymentListener, function(req, res) { 
     var payment = req.payment;
-    // do shit with payment.
+    // do shit with payment {transaction, method, status, reference}
     
     // DO NOT res.send()
 });
