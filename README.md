@@ -2,7 +2,7 @@
 
 [![NPM](https://nodei.co/npm/pesapaljs.png?downloads=true&downloadRank=true&stars=true)](https://www.npmjs.org/package/pesapaljs)
 
-######Important: This code is not ready for production use!!
+######Important: Use this code in production at your own risk!!
 
 ### Goal
 

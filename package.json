@@ -17,9 +17,7 @@
 
     "author": "Salama AB <aksalj@aksalj.me>",
 
-    "licenses": [{
-        "type": "MIT"
-    }],
+    "license": "MIT",
 
     "dependencies": {
         "request": "2.44.0",
