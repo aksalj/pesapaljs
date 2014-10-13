@@ -1,7 +1,7 @@
 {
     "name": "pesapaljs",
-    "version": "0.0.2b",
-    "description": "Pesapal API utility",
+    "version": "0.0.2c",
+    "description": "Integrate PesaPal into your Node application",
     "homepage": "https://github.com/aksalj/pesapaljs",
     "repository": {
         "type": "git",

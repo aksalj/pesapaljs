@@ -38,22 +38,17 @@ api(app, PesaPal);
 
 app.use("/static", express.static(__dirname + "/static"));
 
-app.get('/payment_listener', function (req, res) {
-    var options = {
-        transaction: req.query[PesaPal.getQueryKey('transaction')],
-        reference: req.query[PesaPal.getQueryKey('reference')]
-    };
-
-    PesaPal.paymentDetails(options, function(error, payment) {
-        res.send({error: error, payment: payment});
-    });
+app.get('/payment_listener', PesaPal.paymentListener, function (req) {
+    var payment = req.payment;
+    if (payment) {
+        // TODO: Save in DB?
+    }
 });
-
 
 app.get('/payment_callback', function (req, res) {
     var options = { // Assumes pesapal calls back with a transaction id and reference
-        reference: req.query.pesapal_transaction_tracking_id,
-        transaction: req.query.pesapal_merchant_reference
+        transaction: req.query[PesaPal.getQueryKey('transaction')],
+        reference: req.query[PesaPal.getQueryKey('reference')]
     };
 
     PesaPal.paymentDetails(options, function (error, payment) {
