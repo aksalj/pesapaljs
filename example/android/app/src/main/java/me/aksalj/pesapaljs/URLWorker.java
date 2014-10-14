@@ -1,5 +1,7 @@
 package me.aksalj.pesapaljs;
 
+import android.app.AlertDialog;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.webkit.WebView;
@@ -23,7 +25,7 @@ public class URLWorker extends AsyncTask<Void, Void, WebService.PaymentURL> {
 
     Home context = null;
     boolean firstLoad = true;
-    String callbackURI = "file:///android_asset/callback.html";
+    Uri callbackURI = Uri.parse("pesapal://payment_callback");
 
     public URLWorker(Home cxt) {
         this.context = cxt;
@@ -39,14 +41,18 @@ public class URLWorker extends AsyncTask<Void, Void, WebService.PaymentURL> {
             return;
         }
 
-        final WebDialog dialog = new WebDialog(context, payment.url);
-        dialog.enableJavascript(true);
-        dialog.setWebViewClient(new WebViewClient(){
+        final WebDialog webDialog = new WebDialog(context, payment.url);
+        webDialog.enableJavascript(true);
+        webDialog.setWebViewClient(new WebViewClient(){
+
+            AlertDialog dialog = null;
+
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
                 if(firstLoad) {
                     context.mProgressDialog.cancel();
+                    dialog = webDialog.create();
                     dialog.show();
                     firstLoad = false;
                 }
@@ -58,10 +64,26 @@ public class URLWorker extends AsyncTask<Void, Void, WebService.PaymentURL> {
                 // TODO: Check redirect URL for order transaction id and reference
                 Log.i("Payment Page Redirect", url);
 
+                Uri uri = Uri.parse(url);
+                if(uri.getScheme().contentEquals(callbackURI.getScheme())) {
 
-                // KitKat WebView won't redirect to file:/// ???
+                    // Use these for /payment_status
+                    String transaction = uri.getQueryParameter("pesapal_transaction_tracking_id");
+                    String reference = uri.getQueryParameter("pesapal_merchant_reference");
 
-                view.loadUrl(url);
+                    String msg = "We are processing your payment.\nReference: " + reference;
+                    msg += "\nTransaction: " + transaction;
+
+                    AlertDialog.Builder alert = new AlertDialog.Builder(context);
+                    alert.setTitle("Thank you for doing business with us");
+                    alert.setMessage(msg);
+                    alert.create().show();
+
+                    dialog.cancel();
+
+                } else {
+                    view.loadUrl(url);
+                }
                 return true;
             }
         });
@@ -81,7 +103,7 @@ public class URLWorker extends AsyncTask<Void, Void, WebService.PaymentURL> {
                     context.txtLastName.getText().toString(),
                     context.txtEmail.getText().toString(),
                     context.txtPhone.getText().toString(),
-                    callbackURI
+                    callbackURI.toString()
             );
 
         } catch (Exception ex) {

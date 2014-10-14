@@ -5,6 +5,7 @@ import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.Path;
+import retrofit.http.Query;
 
 /**
  * Copyright (c) 2014 Salama AB
@@ -40,11 +41,14 @@ public interface WebService {
     }
 
 
-    @GET("/payment_status/{reference}")
-    PaymentStatus getPaymentStatus(@Path("reference") String reference);
+    @GET("/payment_status")
+    PaymentStatus getPaymentStatus(@Query("reference") String reference);
 
-    @GET("/payment_details/{reference}")
-    PaymentDetails getPaymentDetails(@Path("reference") String reference);
+    @GET("/payment_status")
+    PaymentStatus getPaymentStatus(@Query("reference") String reference, @Query("transaction") String transaction);
+
+    @GET("/payment_details")
+    PaymentDetails getPaymentDetails(@Query("reference") String reference);
 
 
     @FormUrlEncoded
