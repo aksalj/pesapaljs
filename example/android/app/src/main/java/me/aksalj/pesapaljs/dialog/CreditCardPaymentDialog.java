@@ -3,7 +3,12 @@ package me.aksalj.pesapaljs.dialog;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
+
+import me.aksalj.pesapaljs.R;
 
 /**
  * Copyright (c) 2014 Salama AB
@@ -17,26 +22,40 @@ import android.widget.TextView;
  * Description :
  */
 public class CreditCardPaymentDialog extends AlertDialog.Builder {
-    public CreditCardPaymentDialog(Context context, String orderReference) {
+
+    public interface ICallback {
+        public void onPay(String... cardDetails);
+        public void onCancel();
+    }
+
+    public CreditCardPaymentDialog(Context context, final ICallback callback) {
         super(context);
 
         this.setCancelable(false);
 
-        TextView txt = new TextView(context);
-        txt.setText("Credit card form goes here");
-        this.setView(txt);
+        View root = LayoutInflater.from(context).inflate(R.layout.credit_card, null);
+        final EditText cardNumber = (EditText)root.findViewById(R.id.number);
+        final EditText cvv = (EditText)root.findViewById(R.id.cvv);
+        //...
+        this.setView(root);
 
         this.setPositiveButton("Pay", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-
+                String[] details = new String[]{
+                        // Fill in card details
+                        cardNumber.getText().toString(),
+                        cvv.getText().toString()
+                        // ...
+                };
+                callback.onPay(details);
             }
         });
 
         this.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-
+                callback.onCancel();
             }
         });
 
