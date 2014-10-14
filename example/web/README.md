@@ -1,1 +1,2 @@
-######Exemple
+## Web Service
+A simple web service.

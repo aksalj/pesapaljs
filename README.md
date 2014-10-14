@@ -10,17 +10,17 @@ Make it easy to integrate [PesaPal](https://www.pesapal.com) into a website or m
 to customize the payment user interface.
 
 ### Core Features
-- `.paymentListener`: `express` middleware that parses IPNs.
+- `paymentListener`: `express` middleware that parses IPNs.
 
-- `.paymentStatus(options, callback)` : Get status of a payment. `options` should contain either a `reference` alone or a `reference` and `transaction` together.
+- `paymentStatus(options, callback)` : Get status of a payment. `options` should contain either a `reference` alone or a `reference` and `transaction` together.
 
-- `.paymentDetails(options, callback`: Get all information about a payment. `options` should contain a `reference` and a `transaction`.
+- `paymentDetails(options, callback`): Get all information about a payment. `options` should contain a `reference` and a `transaction`.
 
-- `.getPaymentURL(order, callbackURI)`: Get a signed URL to the PesaPal payment page.
+- `getPaymentURL(order, callbackURI)`: Get a signed URL to the PesaPal payment page.
 
-- `.makeOrder(order, paymentMethod, callback)`: Prepare an order for payment on a custom UI.
+- `makeOrder(order, paymentMethod, callback)`: Prepare an order for payment on a custom UI.
 
-- `.payOrder(order, paymentDetails, callback)`: Pay an order with details collected through a custom UI.
+- `payOrder(order, paymentDetails, callback)`: Pay an order with details collected through a custom UI.
 
 ### Usage summary
 
