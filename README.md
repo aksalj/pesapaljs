@@ -18,7 +18,7 @@ to customize the payment user interface.
 
 - `makeOrder(order, paymentMethod, callback)`: Prepare an order for payment on a custom UI.
 
-- `payOrder(order, paymentDetails, callback)`: Pay an order with details collected through a custom UI.
+- `payOrder(order, paymentDetails, callback)`: After a call to `makeOrder`, pay an order with details collected through a custom UI.
 
 ### Usage summary
 
