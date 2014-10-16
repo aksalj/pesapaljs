@@ -909,5 +909,5 @@
 $('.active form').card({
     container: $('.card-wrapper'),
     nameInput: 'input[name="first_name"], input[name="last_name"]',
-    cvcInput: 'input[name="cvv"'
+    cvcInput: 'input[name="cvv"]'
 });

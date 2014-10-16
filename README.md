@@ -95,8 +95,6 @@ PesaPal.makeOrder(order, PesaPal.PaymentMethod.Airtel, function(error, order) {
 });
 ```
 
-######Important: Module not ready for production!
-
 ### Contributing
 
 1. Fork this repo and make changes in your own fork.

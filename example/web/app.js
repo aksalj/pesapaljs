@@ -122,7 +122,12 @@ app.post('/pay', function (req, res, next) {
         // TODO: Render Success / Error UI
         // TODO: Save transaction id for conformation when I get an IPN
         var message = transactionId == null ? error.message : "Thank you for doing business with us.";
-        res.render("message", {message: message});
+        var details = null;
+        if(transactionId) {
+            details = "Ref #: " + reference + "  ";
+            details += "Transaction ID: " + transactionId;
+        }
+        res.render("message", {message: message, details: details});
     };
 
     var paymentData = null;
@@ -137,7 +142,7 @@ app.post('/pay', function (req, res, next) {
             paymentData = new PesaPal.Card();
             paymentData.firstName = req.body.first_name;
             paymentData.lastName = req.body.last_name;
-            paymentData.number = req.body.number;
+            paymentData.number = req.body.number.replace(/ /g, "");
             paymentData.cvv = req.body.cvv;
             paymentData.expirationMonth = (req.body.expiry.split('/') [0]).trim();
             paymentData.expirationYear = (req.body.expiry.split('/') [1]).trim();
