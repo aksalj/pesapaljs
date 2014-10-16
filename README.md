@@ -2,8 +2,6 @@
 
 [![NPM](https://nodei.co/npm/pesapaljs.png?downloads=true&downloadRank=true&stars=true)](https://www.npmjs.org/package/pesapaljs)
 
-######Important: Use this code in production at your own risk!!
-
 ### Goal
 
 Make it easy to integrate [PesaPal](https://www.pesapal.com) into a website or mobile app AND most importantly allow one 
@@ -96,6 +94,8 @@ PesaPal.makeOrder(order, PesaPal.PaymentMethod.Airtel, function(error, order) {
     });
 });
 ```
+
+######Important: Module not ready for production!
 
 ### Contributing
 
