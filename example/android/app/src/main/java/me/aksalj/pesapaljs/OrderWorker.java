@@ -7,6 +7,7 @@ import android.widget.Toast;
 
 import me.aksalj.pesapaljs.dialog.CreditCardPaymentDialog;
 import me.aksalj.pesapaljs.dialog.MobilePaymentDialog;
+import retrofit.RetrofitError;
 
 /**
  * Copyright (c) 2014 Salama AB
@@ -40,6 +41,7 @@ public class OrderWorker extends AsyncTask<Void, Void, WebService.OrderResult> {
 
     @Override
     protected void onPostExecute(final WebService.OrderResult orderResult) {
+
         if (orderResult != null) {
             // TODO: Show payment collection UI
             if(method.contentEquals("mpesa") || method.contentEquals("airtel")) {
@@ -50,7 +52,9 @@ public class OrderWorker extends AsyncTask<Void, Void, WebService.OrderResult> {
                         submitMobilePayment(orderResult.reference, phone, code);
                     }
                     @Override
-                    public void onCancel() { }
+                    public void onCancel() {
+                        context.mProgressDialog.cancel();
+                    }
                 }).show();
 
             } else if (method.contentEquals("visa") || method.contentEquals("mastercard")) {
@@ -61,16 +65,18 @@ public class OrderWorker extends AsyncTask<Void, Void, WebService.OrderResult> {
                     }
 
                     @Override
-                    public void onCancel() { }
+                    public void onCancel() {
+                        context.mProgressDialog.cancel();
+                    }
                 }).show();
 
             } else {
-                Toast.makeText(context, "WTF??", Toast.LENGTH_SHORT).show();
+                context.showToast("WTF??");
                 context.mProgressDialog.cancel();
             }
 
         } else {
-            Toast.makeText(context, "Failed to prepare order", Toast.LENGTH_LONG).show();
+            context.showToast("Failed to prepare order");
             context.mProgressDialog.cancel();
         }
     }
@@ -104,20 +110,68 @@ public class OrderWorker extends AsyncTask<Void, Void, WebService.OrderResult> {
                         }
                     });
 
-                    context.mProgressDialog.cancel();
-
-                }catch (Exception ex) {
+                }catch (RetrofitError ex) {
                     ex.printStackTrace();
+                    context.showToast("Failed to Pay Order");
                 }
 
+                context.mProgressDialog.cancel();
 
             }
         }).start();
     }
 
-    private void submitCreditCardPayment(final String reference, String... cardDetails) {
+    private void submitCreditCardPayment(final String reference, final String... cardDetails) {
 
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+
+                    final WebService.PaymentResult result =
+                            context.mService.payCreditCardOrder(reference,
+                                    cardDetails[0],
+                                    cardDetails[1],
+                                    cardDetails[2],
+                                    cardDetails[3],
+                                    cardDetails[4],
+                                    cardDetails[5],
+                                    cardDetails[6],
+                                    cardDetails[7],
+                                    cardDetails[8]);
+
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(result != null && result.transaction != null) {
+                                // Use these for /payment_status
+                                String transaction = result.transaction;
+                                String reference = result.reference;
+
+                                String msg = "We are processing your payment.\nReference: " + reference;
+                                msg += "\nTransaction: " + transaction;
+
+                                AlertDialog.Builder alert = new AlertDialog.Builder(context);
+                                alert.setTitle("Thank you for doing business with us");
+                                alert.setMessage(msg);
+                                alert.create().show();
+                            }
+                        }
+                    });
+
+                }catch (RetrofitError ex) {
+                    ex.printStackTrace();
+                    context.showToast("Failed to Pay Order");
+                }
+
+                context.mProgressDialog.cancel();
+
+            }
+        }).start();
     }
+
+
+
 
     @Override
     protected WebService.OrderResult doInBackground(Void... voids) {

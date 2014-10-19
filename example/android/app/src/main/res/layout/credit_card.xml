@@ -9,12 +9,14 @@
         android:layout_height="wrap_content"
         android:inputType="number"
         android:hint="Card Number"
+        android:text="4242424242424242"
         android:id="@+id/number" />
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="number"
         android:hint="CVV"
+        android:text="962"
         android:ems="4"
         android:id="@+id/cvv" />
 

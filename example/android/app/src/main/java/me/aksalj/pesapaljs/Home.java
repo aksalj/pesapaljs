@@ -3,6 +3,7 @@ package me.aksalj.pesapaljs;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -10,20 +11,26 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.squareup.okhttp.OkHttpClient;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import retrofit.RestAdapter;
+import retrofit.client.OkClient;
 
 
 public class Home extends Activity {
 
     private SecureRandom mRandom = new SecureRandom();
 
+    Handler mHandler = null;
     WebService mService = null;
 
     String mReference = null;
@@ -60,6 +67,8 @@ public class Home extends Activity {
 
         ButterKnife.inject(this);
 
+        mHandler = new Handler();
+
         setTitle("Checkout");
 
         prepUI();
@@ -85,11 +94,23 @@ public class Home extends Activity {
     }
 
     private void prepService() {
+        OkHttpClient client = new OkHttpClient();
+        client.setConnectTimeout(3, TimeUnit.MINUTES);
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setLogLevel(RestAdapter.LogLevel.FULL)
-                .setEndpoint("http://192.168.0.3:3000")
+                .setClient(new OkClient(client))
+                .setEndpoint("http://192.168.0.3.xip.io:3000")
                 .build();
         mService = restAdapter.create(WebService.class);
+    }
+
+    public void showToast(final String msg) {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(Home.this, msg, Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
 

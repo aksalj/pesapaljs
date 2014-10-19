@@ -44,9 +44,15 @@ public class CreditCardPaymentDialog extends AlertDialog.Builder {
             public void onClick(DialogInterface dialogInterface, int i) {
                 String[] details = new String[]{
                         // Fill in card details
+                        "Joe",
+                        "Bart",
                         cardNumber.getText().toString(),
-                        cvv.getText().toString()
-                        // ...
+                        cvv.getText().toString(),
+                        "09/2018",
+                        "KE",
+                        "254",
+                        "718769882",
+                        "jb@aksalj.me"
                 };
                 callback.onPay(details);
             }
