@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.app.ActionBarActivity;
 import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -26,7 +27,7 @@ import retrofit.RestAdapter;
 import retrofit.client.OkClient;
 
 
-public class Home extends Activity {
+public class Home extends ActionBarActivity {
 
     private SecureRandom mRandom = new SecureRandom();
 
