@@ -25,8 +25,11 @@ to customize the payment user interface.
 ###### Setup
 ```javascript
 
-var PesaPal = require('pesapaljs');
-PesaPal.initialize({debug: true, key: CONSUMER_KEY, secret: CONSUMER_SECRET});
+var PesaPal = require('pesapaljs').init({
+    key: CONSUMER_KEY,
+    secret: CONSUMER_SECRET,
+    debug: true
+});
 
 ```
 When the `debug` option is set, `pesapaljs` will use the `demo.pesapal.com/*` endpoints.
