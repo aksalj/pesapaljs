@@ -11,22 +11,18 @@
  *
  */
 var express = require('express');
+var morgan = require('morgan');
 var bodyParser = require('body-parser');
-var PesaPal = require('../../lib/pesapal');
 var api = require('./api');
 var db = require("./database");
-
-var conf = {
-    //demojs demojs@aksalj.me
-    //DemoPassword
+var PesaPal = require('../../lib/pesapal').init({
     debug: true,
-    key:"cq4aoP7ROjqsosMYrP2Btftbm4TzHLoK",
-    secret:"O6SQHlUHbIEhINtyUJxRTkCdqvw="
-};
-
-PesaPal.initialize(conf);
+    key: "cq4aoP7ROjqsosMYrP2Btftbm4TzHLoK",
+    secret: "O6SQHlUHbIEhINtyUJxRTkCdqvw="
+});
 
 var app = express();
+app.use(morgan('dev'));
 
 app.set('views', __dirname + '/view');
 app.set('view engine', 'jade');

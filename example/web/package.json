@@ -1,8 +1,9 @@
 {
     "name": "pesapaljs-exemple",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "dependencies":{
         "express":"4.x.x",
+        "morgan":"1.5.x",
         "body-parser":"x.x.x",
         "jade":"x.x.x"
     }
