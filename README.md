@@ -4,7 +4,7 @@
 
 ### Goal
 
-Make it easy to integrate [PesaPal](https://www.pesapal.com) into a website or mobile app AND most importantly allow one 
+Make it easy to integrate [PesaPal](https://www.pesapal.com) into a website or mobile app AND most importantly allow one
 to customize the payment user interface.
 
 ### Core Features
@@ -28,7 +28,7 @@ to customize the payment user interface.
 var PesaPal = require('pesapaljs').init({
     key: CONSUMER_KEY,
     secret: CONSUMER_SECRET,
-    debug: true
+    debug: true // false in production!
 });
 
 ```
