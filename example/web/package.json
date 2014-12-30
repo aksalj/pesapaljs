@@ -5,6 +5,7 @@
         "express":"4.x.x",
         "morgan":"1.5.x",
         "body-parser":"x.x.x",
-        "jade":"x.x.x"
+        "jade":"x.x.x",
+        "lorem-ipsum": "x.x.x"
     }
 }

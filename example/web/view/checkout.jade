@@ -10,14 +10,17 @@ html
                 input(type='hidden', name='reference', value=reference)
                 input(type='hidden', name='type', value='MERCHANT')
                 input(type='hidden', name='amount', value=amount)
-                input(type='hidden', name='currency', value='KES')
                 input(type='hidden', name='description', value=description)
 
                 div(style='text-align:left; padding:20px')
                     h4 Order &nbsp;
                         em="(Ref#" + reference + ")"
                     div Amount:&nbsp;&nbsp;
-                        b=amount + ' KES'
+                        b=amount
+                            | &nbsp;&nbsp;
+                        select(name='currency')
+                            option(value='KES') KES
+                            //option(value='UGX') UGX
                     div Description:&nbsp;&nbsp;
                         b=description
 

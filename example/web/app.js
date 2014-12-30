@@ -13,11 +13,12 @@
 var express = require('express');
 var morgan = require('morgan');
 var bodyParser = require('body-parser');
+var loremIpsum = require('lorem-ipsum');
 var api = require('./api');
 var db = require("./database");
 var PesaPal = require('../../lib/pesapal').init({
     debug: true,
-    key: "cq4aoP7ROjqsosMYrP2Btftbm4TzHLoK",
+    key: "cq4aoP7ROjqsosMYrP2Btftbm4TzHLoK", // TODO: Use your own credentials!!
     secret: "O6SQHlUHbIEhINtyUJxRTkCdqvw="
 });
 
@@ -56,7 +57,7 @@ app.get('/checkout', function (req, res, next) {
     // TODO: Render checkout UI
     res.render("checkout", {
         reference: new Date().getTime(),
-        description: "Order description",
+        description: loremIpsum(),
         amount: Math.floor((Math.random() * 20000) + 1)
     });
 });
@@ -71,7 +72,7 @@ app.post('/checkout', function (req, res, next) {
         customer,
         req.body.description,
         req.body.amount,
-        "KES",
+        req.body.currency,
         req.body.type);
 
 
@@ -83,7 +84,7 @@ app.post('/checkout', function (req, res, next) {
     } else { // Use Custom Payment Page
 
         var mobilePayment = req.body.mobile != undefined;
-        var method = mobilePayment ? PesaPal.PaymentMethod.MPesa : PesaPal.PaymentMethod.Visa;
+        var method = mobilePayment ? PesaPal.PaymentMethod.Airtel : PesaPal.PaymentMethod.Visa;
 
         PesaPal.makeOrder(order, method, function (error, order) {
 
