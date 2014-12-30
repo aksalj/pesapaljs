@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=640">
+
+    <link rel="stylesheet" href="stylesheets/core.css" media="screen">
+    <link rel="stylesheet" href="stylesheets/mobile.css" media="handheld, only screen and (max-device-width:640px)">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+
+    <script type="text/javascript" src="javascripts/modernizr.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script type="text/javascript" src="javascripts/headsmart.min.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function () {
+        $('#main_content').headsmart()
+      })
+    </script>
+    <title>PesapalJS by aksalj</title>
+  </head>
+
+  <body>
+    <a id="forkme_banner" href="https://github.com/aksalj/pesapaljs">View on GitHub</a>
+    <div class="shell">
+
+      <header>
+        <span class="ribbon-outer">
+          <span class="ribbon-inner">
+            <h1>PesapalJS</h1>
+            <h2>Integrate PesaPal into your Node application</h2>
+          </span>
+          <span class="left-tail"></span>
+          <span class="right-tail"></span>
+        </span>
+      </header>
+
+      <section id="downloads">
+        <span class="inner">
+          <a href="https://github.com/aksalj/pesapaljs/zipball/master" class="zip"><em>download</em> .ZIP</a><a href="https://github.com/aksalj/pesapaljs/tarball/master" class="tgz"><em>download</em> .TGZ</a>
+        </span>
+      </section>
+
+
+      <span class="banner-fix"></span>
+
+
+      <section id="main_content">
+        <h2>
+<a id="pesapaljs" class="anchor" href="#pesapaljs" aria-hidden="true"><span class="octicon octicon-link"></span></a>PesapalJS</h2>
+
+<p><a href="https://www.npmjs.org/package/pesapaljs"><img src="https://nodei.co/npm/pesapaljs.png?downloads=true&amp;downloadRank=true&amp;stars=true" alt="NPM"></a></p>
+
+<h3>
+<a id="goal" class="anchor" href="#goal" aria-hidden="true"><span class="octicon octicon-link"></span></a>Goal</h3>
+
+<p>Make it easy to integrate <a href="https://www.pesapal.com">PesaPal</a> into a website or mobile app AND most importantly allow one
+to customize the payment user interface.</p>
+
+<h3>
+<a id="core-features" class="anchor" href="#core-features" aria-hidden="true"><span class="octicon octicon-link"></span></a>Core Features</h3>
+
+<ul>
+<li><p><code>paymentListener</code>: <code>express</code> middleware that parses IPNs.</p></li>
+<li><p><code>paymentStatus(options, callback)</code> : Get status of a payment. <code>options</code> should contain either a <code>reference</code> alone or a <code>reference</code> and <code>transaction</code> together.</p></li>
+<li><p><code>paymentDetails(options, callback</code>): Get all information about a payment. <code>options</code> should contain a <code>reference</code> and a <code>transaction</code>.</p></li>
+<li><p><code>getPaymentURL(order, callbackURI)</code>: Get a signed URL to the PesaPal payment page.</p></li>
+<li><p><code>makeOrder(order, paymentMethod, callback)</code>: Prepare an order for payment on a custom UI.</p></li>
+<li><p><code>payOrder(order, paymentDetails, callback)</code>: After a call to <code>makeOrder</code>, pay an order with details collected through a custom UI.</p></li>
+</ul>
+
+<h3>
+<a id="usage-summary" class="anchor" href="#usage-summary" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage summary</h3>
+
+<h6>
+<a id="setup" class="anchor" href="#setup" aria-hidden="true"><span class="octicon octicon-link"></span></a>Setup</h6>
+
+<div class="highlight highlight-javascript"><pre>
+<span class="pl-s">var</span> PesaPal <span class="pl-k">=</span> <span class="pl-s3">require</span>(<span class="pl-s1"><span class="pl-pds">'</span>pesapaljs<span class="pl-pds">'</span></span>).init({
+    key<span class="pl-k">:</span> CONSUMER_KEY,
+    secret<span class="pl-k">:</span> CONSUMER_SECRET,
+    debug<span class="pl-k">:</span> <span class="pl-c1">true</span> <span class="pl-c">// false in production!</span>
+});
+</pre></div>
+
+<p>When the <code>debug</code> option is set, <code>pesapaljs</code> will use the <code>demo.pesapal.com/*</code> endpoints.</p>
+
+<h6>
+<a id="listen-for-payment-notifications" class="anchor" href="#listen-for-payment-notifications" aria-hidden="true"><span class="octicon octicon-link"></span></a>Listen for payment notifications</h6>
+
+<div class="highlight highlight-javascript"><pre>
+<span class="pl-c">// Listen for IPNs (With an express app)</span>
+app.get(<span class="pl-s1"><span class="pl-pds">'</span>/ipn<span class="pl-pds">'</span></span>, PesaPal.paymentListener, <span class="pl-st">function</span>(<span class="pl-vpf">req</span>, <span class="pl-vpf">res</span>) { 
+    <span class="pl-s">var</span> payment <span class="pl-k">=</span> req.payment;
+    <span class="pl-c">// do shit with payment {transaction, method, status, reference}</span>
+
+    <span class="pl-c">// DO NOT res.send()</span>
+});
+</pre></div>
+
+<h6>
+<a id="check-payment-info" class="anchor" href="#check-payment-info" aria-hidden="true"><span class="octicon octicon-link"></span></a>Check Payment info</h6>
+
+<div class="highlight highlight-javascript"><pre>
+<span class="pl-s">var</span> options <span class="pl-k">=</span> {
+    reference<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">"</span>42314123<span class="pl-pds">"</span></span>, <span class="pl-c">// Send this</span>
+    transaction<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">"</span>175c6485-0948-4cb9-8d72-05a2c3f25be5<span class="pl-pds">"</span></span> <span class="pl-c">// or both.</span>
+};
+PesaPal.paymentStatus(options, <span class="pl-st">function</span>(<span class="pl-vpf">error</span>, <span class="pl-vpf">status</span>}{
+    // do shit
+});
+
+PesaPal.paymentDetails(options, <span class="pl-st">function</span> (<span class="pl-vpf">error</span>, <span class="pl-vpf">payment</span>) {
+    <span class="pl-c">//payment -&gt; {transaction, method, status, reference}</span>
+    <span class="pl-c">//do shit</span>
+});
+</pre></div>
+
+<h6>
+<a id="make-a-direct-order" class="anchor" href="#make-a-direct-order" aria-hidden="true"><span class="octicon octicon-link"></span></a>Make a direct order</h6>
+
+<p>Make your customer pay on PesaPal's page:</p>
+
+<div class="highlight highlight-javascript"><pre>
+<span class="pl-s">var</span> customer <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">PesaPal.Customer</span>(<span class="pl-s1"><span class="pl-pds">"</span>kariuki@pesapal.com<span class="pl-pds">"</span></span>);
+<span class="pl-s">var</span> order <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">PesaPal.Order</span>(<span class="pl-s1"><span class="pl-pds">"</span>42314123<span class="pl-pds">"</span></span>, customer, <span class="pl-s1"><span class="pl-pds">"</span>Ma ndazi<span class="pl-pds">"</span></span>, <span class="pl-c1">1679.50</span>, <span class="pl-s1"><span class="pl-pds">"</span>KES<span class="pl-pds">"</span></span>, <span class="pl-s1"><span class="pl-pds">"</span>MERCHANT<span class="pl-pds">"</span></span>);
+
+<span class="pl-c">// Redirect user to PesaPal</span>
+<span class="pl-s">var</span> url <span class="pl-k">=</span> PesaPal.getPaymentURL(order, <span class="pl-s1"><span class="pl-pds">"</span>http://mysite.co.ke/callback<span class="pl-pds">"</span></span>);
+<span class="pl-c">// send it to an iframe ?</span>
+</pre></div>
+
+<p>Or make your own awesome payment UI (web page, mobile app front-end, etc.):</p>
+
+<div class="highlight highlight-javascript"><pre>
+<span class="pl-s">var</span> customer <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">PesaPal.Customer</span>(<span class="pl-s1"><span class="pl-pds">"</span>john@pesapal.com<span class="pl-pds">"</span></span>);
+<span class="pl-s">var</span> order <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">PesaPal.Order</span>(<span class="pl-s1"><span class="pl-pds">"</span>WSDE0RFCC<span class="pl-pds">"</span></span>, customer, <span class="pl-s1"><span class="pl-pds">"</span>Maziwa<span class="pl-pds">"</span></span>, <span class="pl-c1">100</span>, <span class="pl-s1"><span class="pl-pds">"</span>KES<span class="pl-pds">"</span></span>, <span class="pl-s1"><span class="pl-pds">"</span>MERCHANT<span class="pl-pds">"</span></span>);
+
+<span class="pl-c">// place order directly with your own UI</span>
+PesaPal.makeOrder(order, PesaPal.PaymentMethod.Airtel, <span class="pl-st">function</span>(<span class="pl-vpf">error</span>, <span class="pl-vpf">order</span>) {
+    <span class="pl-c">// Get payment details from user, DB - like their credit card info ;) or whatever</span>
+
+    <span class="pl-c">// ...</span>
+
+    PesaPal.payOrder(order, <span class="pl-k">new</span> <span class="pl-en">PesaPal.MobileMoney</span>(<span class="pl-s1"><span class="pl-pds">"</span>254728988983<span class="pl-pds">"</span></span>,<span class="pl-s1"><span class="pl-pds">"</span>DEWEDWED<span class="pl-pds">"</span></span>), <span class="pl-st">function</span> (<span class="pl-vpf">error</span>, <span class="pl-vpf">reference</span>, <span class="pl-vpf">transactionId</span>) {
+        <span class="pl-c">// do shit</span>
+    });
+});</pre></div>
+
+<h3>
+<a id="contributing" class="anchor" href="#contributing" aria-hidden="true"><span class="octicon octicon-link"></span></a>Contributing</h3>
+
+<ol>
+<li>Fork this repo and make changes in your own fork.</li>
+<li>Commit your changes and push to your fork <code>git push origin master</code>
+</li>
+<li>Create a new pull request and submit it back to the project.</li>
+</ol>
+
+<h3>
+<a id="bugs--issues" class="anchor" href="#bugs--issues" aria-hidden="true"><span class="octicon octicon-link"></span></a>Bugs &amp; Issues</h3>
+
+<p>To report bugs (or any other issues), use the <a href="https://github.com/aksalj/pesapaljs/issues">issues page</a>.</p>
+      </section>
+
+      <footer>
+        <span class="ribbon-outer">
+          <span class="ribbon-inner">
+            <p>this project by <a href="https://github.com/aksalj">aksalj</a> can be found on <a href="https://github.com/aksalj/pesapaljs">GitHub</a></p>
+          </span>
+          <span class="left-tail"></span>
+          <span class="right-tail"></span>
+        </span>
+        <p>Generated with <a href="http://pages.github.com">GitHub Pages</a> using Merlot</p>
+        <span class="octocat"></span>
+      </footer>
+
+    </div>
+
+    
+  </body>
+</html>
