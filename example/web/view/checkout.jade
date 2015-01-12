@@ -20,7 +20,9 @@ html
                             | &nbsp;&nbsp;
                         select(name='currency')
                             option(value='KES') KES
-                            //option(value='UGX') UGX
+                            option(value='UGX') UGX
+                            option(value='USD') USD
+                        sup &nbsp;*
                     div Description:&nbsp;&nbsp;
                         b=description
 
@@ -41,3 +43,7 @@ html
 
                         td
                             input(type='submit', value='Payment on PesaPal', class='button', name='pesapal')
+                small
+                    sup *&nbsp;
+                    | Pesapal amount limits apply.
+                    | Amount will be converted to merchant's currency if need be.
