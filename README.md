@@ -8,11 +8,11 @@ Make it easy to integrate [PesaPal](https://www.pesapal.com) into a website or m
 to customize the payment user interface.
 
 ### Core Features
-- `paymentListener`: `express` middleware that parses IPNs.
+- `paymentListener`: `express` middleware that parses PesaPal payment notifications.
 
-- `paymentStatus(options, callback)` : Get status of a payment. `options` should contain either a `reference` alone or a `reference` and `transaction` together.
+- `getPaymentStatus(options, callback)` : Get status of a payment. `options` should contain either a `reference` alone or a `reference` and `transaction` together.
 
-- `paymentDetails(options, callback`): Get all information about a payment. `options` should contain a `reference` and a `transaction`.
+- `getPaymentDetails(options, callback`): Get all information about a payment. `options` should contain a `reference` and a `transaction`.
 
 - `getPaymentURL(order, callbackURI)`: Get a signed URL to the PesaPal payment page.
 
@@ -54,11 +54,11 @@ var options = {
     reference: "42314123", // Send this
     transaction: "175c6485-0948-4cb9-8d72-05a2c3f25be5" // or both.
 };
-PesaPal.paymentStatus(options, function(error, status}{
+PesaPal.getPaymentStatus(options, function(error, status}{
     // do shit
 });
 
-PesaPal.paymentDetails(options, function (error, payment) {
+PesaPal.getPaymentDetails(options, function (error, payment) {
     //payment -> {transaction, method, status, reference}
     //do shit
 });

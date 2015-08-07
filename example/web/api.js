@@ -35,7 +35,7 @@ exports = module.exports = function (app, PesaPal) {
         if(req.query.reference) options.reference = req.query.reference;
         if(req.query.transaction) options.transaction = req.query.transaction;
 
-        PesaPal.paymentStatus(options, function(error, status) {
+        PesaPal.getPaymentStatus(options, function(error, status) {
             if(error) {
                 res.status(500).send(error);
             } else {
@@ -50,7 +50,7 @@ exports = module.exports = function (app, PesaPal) {
         if(req.query.transaction) options.transaction = req.query.transaction;
 
 
-        PesaPal.paymentDetails(options, function (error, payment) {
+        PesaPal.getPaymentDetails(options, function (error, payment) {
             if(error) {
                 res.status(500).send(error);
             } else {

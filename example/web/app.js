@@ -48,7 +48,7 @@ app.get('/payment_callback', function (req, res) {
         reference: req.query[PesaPal.getQueryKey('reference')]
     };
 
-    PesaPal.paymentDetails(options, function (error, payment) {
+    PesaPal.getPaymentDetails(options, function (error, payment) {
         res.send({error: error, payment: payment});
     });
 });
