@@ -20,7 +20,14 @@ to customize the payment user interface.
 
 - `payOrder(order, paymentDetails, callback)`: After a call to `makeOrder`, pay an order with details collected through a custom UI.
 
-### Usage summary
+### Usage
+
+###### Intsall
+
+```shell
+$ npm install pesapaljs
+
+```
 
 ###### Setup
 ```javascript
