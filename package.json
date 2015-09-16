@@ -5,12 +5,11 @@
     "homepage": "https://github.com/aksalj/pesapaljs",
     "repository": {
         "type": "git",
-        "url": "https://github.com/aksalj/pesapaljs"
+        "url": "git+https://github.com/aksalj/pesapaljs.git"
     },
 
     "bugs": {
-        "url": "https://github.com/aksalj/pesapaljs/issues",
-        "email": "devaksal@gmail.com"
+        "url": "https://github.com/aksalj/pesapaljs/issues"
     },
 
     "keywords": ["pesapal", "mpesa", "mobile money", "airtel", "safaricom", "credit card", "debit card", "visa", "mastercard", "mtn", "yucash", "zap", "equity", "coop"],

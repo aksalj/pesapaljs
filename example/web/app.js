@@ -18,8 +18,8 @@ var api = require('./api');
 var db = require("./database");
 var PesaPal = require('../../lib/pesapal').init({
     debug: true,
-    key: "cq4aoP7ROjqsosMYrP2Btftbm4TzHLoK", // TODO: Use your own credentials!!
-    secret: "O6SQHlUHbIEhINtyUJxRTkCdqvw="
+    key: "s9wWRUjVSuzqvZIoVDzxOsjgNdmWwoAR", // TODO: Use your own credentials!!
+    secret: "fe9iGVCH8YkJGL9G5V1epBh7zrQ="
 });
 
 var app = express();
@@ -49,7 +49,14 @@ app.get('/payment_callback', function (req, res) {
     };
 
     PesaPal.getPaymentDetails(options, function (error, payment) {
-        res.send({error: error, payment: payment});
+        // check payment.status and proceed accordingly
+
+        var message = "Thank you for doing business with us.";
+        res.render("message", {
+            message: message,
+            details: JSON.stringify(payment, null, 2),
+            error: error ? JSON.stringify(error, null, 2) : null
+        });
     });
 });
 
@@ -84,7 +91,7 @@ app.post('/checkout', function (req, res, next) {
     } else { // Use Custom Payment Page
 
         var mobilePayment = req.body.mobile != undefined;
-        var method = mobilePayment ? PesaPal.PaymentMethod.Airtel : PesaPal.PaymentMethod.Visa;
+        var method = mobilePayment ? PesaPal.PaymentMethod.MPesa : PesaPal.PaymentMethod.Visa;
 
         PesaPal.makeOrder(order, method, function (error, order) {
 
@@ -117,14 +124,27 @@ app.post('/pay', function (req, res, next) {
 
     var callback = function (error, reference, transactionId) {
         // TODO: Render Success / Error UI
-        // TODO: Save transaction id for conformation when I get an IPN
-        var message = transactionId == null ? error.message : "Thank you for doing business with us.";
-        var details = null;
-        if(transactionId) {
-            details = "Ref #: " + reference + "  ";
-            details += "Transaction ID: " + transactionId;
+        // TODO: Save transaction id for conformation when I get an IPN? Or check payment status right now?
+
+        if(error) {
+            return res.send(error.toString());
         }
-        res.render("message", {message: message, details: details});
+
+        var options = {
+            transaction: transactionId,
+            reference: reference
+        };
+        PesaPal.getPaymentDetails(options, function (error, payment) {
+            // check payment.status and proceed accordingly
+
+            var message = "Thank you for doing business with us.";
+            res.render("message", {
+                message: message,
+                details: JSON.stringify(payment, null, 2),
+                error: error ? JSON.stringify(error, null, 2) : null
+            });
+        });
+
     };
 
     var paymentData = null;
