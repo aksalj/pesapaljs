@@ -20,7 +20,14 @@ to customize the payment user interface.
 
 - `payOrder(order, paymentDetails, callback)`: After a call to `makeOrder`, pay an order with details collected through a custom UI.
 
-### Usage summary
+### Usage
+
+###### Intsall
+
+```shell
+$ npm install pesapaljs
+
+```
 
 ###### Setup
 ```javascript
@@ -40,7 +47,7 @@ When the `debug` option is set, `pesapaljs` will use the `demo.pesapal.com/*` en
 // Listen for IPNs (With an express app)
 app.get('/ipn', PesaPal.paymentListener, function(req, res) { 
     var payment = req.payment;
-    // do shit with payment {transaction, method, status, reference}
+    // do stuff with payment {transaction, method, status, reference}
     
     // DO NOT res.send()
 });
@@ -55,12 +62,12 @@ var options = {
     transaction: "175c6485-0948-4cb9-8d72-05a2c3f25be5" // or both.
 };
 PesaPal.getPaymentStatus(options, function(error, status}{
-    // do shit
+    // do stuff
 });
 
 PesaPal.getPaymentDetails(options, function (error, payment) {
     //payment -> {transaction, method, status, reference}
-    //do shit
+    //do stuff
 });
 
 ```
@@ -93,7 +100,7 @@ PesaPal.makeOrder(order, PesaPal.PaymentMethod.Airtel, function(error, order) {
     // ...
     
     PesaPal.payOrder(order, new PesaPal.MobileMoney("254728988983","DEWEDWED"), function (error, reference, transactionId) {
-        // do shit
+        // do stuff
     });
 });
 ```
