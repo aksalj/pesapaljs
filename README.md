@@ -22,11 +22,10 @@ to customize the payment user interface.
 
 ### Usage
 
-###### Intsall
+###### Install
 
 ```shell
 $ npm install pesapaljs
-
 ```
 
 ###### Setup
