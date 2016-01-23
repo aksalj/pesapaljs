@@ -48,16 +48,25 @@ app.get('/payment_callback', function (req, res) {
         reference: req.query[PesaPal.getQueryKey('reference')]
     };
 
-    PesaPal.getPaymentDetails(options, function (error, payment) {
-        // check payment.status and proceed accordingly
+    PesaPal.getPaymentDetails(options)
+        .then(function (payment) {
+            // check payment.status and proceed accordingly
 
-        var message = "Thank you for doing business with us.";
-        res.render("message", {
-            message: message,
-            details: JSON.stringify(payment, null, 2),
-            error: error ? JSON.stringify(error, null, 2) : null
+            var message = "Thank you for doing business with us.";
+            res.render("message", {
+                message: message,
+                details: JSON.stringify(payment, null, 2)
+            });
+
+        })
+        .catch(function(error) {
+            var message = "Oops! Something went wrong";
+            res.render("message", {
+                message: message,
+                error: JSON.stringify(error, null, 2)
+            });
         });
-    });
+
 });
 
 app.get('/checkout', function (req, res, next) {
@@ -93,11 +102,8 @@ app.post('/checkout', function (req, res, next) {
         var mobilePayment = req.body.mobile != undefined;
         var method = mobilePayment ? PesaPal.PaymentMethod.MPesa : PesaPal.PaymentMethod.Visa;
 
-        PesaPal.makeOrder(order, method, function (error, order) {
-
-            if(error) {
-                res.send(error.message);
-            } else {
+        PesaPal.makeOrder(order, method)
+            .then(function (order) {
 
                 // TODO: Save order in DB
                 db.saveOrder(order);
@@ -111,9 +117,11 @@ app.post('/checkout', function (req, res, next) {
                 } else {
                     res.render("card", {reference: order.reference});
                 }
-            }
 
-        });
+            })
+            .catch(function(error) {
+                res.send(error.message);
+            });
     }
 });
 
@@ -122,28 +130,29 @@ app.post('/pay', function (req, res, next) {
     // TODO: Retrieve order from DB
     var order = db.getOrder(req.body.reference);
 
-    var callback = function (error, reference, transactionId) {
+    var processResponse = function (paymentResponse) {
         // TODO: Render Success / Error UI
         // TODO: Save transaction id for conformation when I get an IPN? Or check payment status right now?
 
-        if(error) {
-            return res.send(error.toString());
-        }
+        PesaPal.getPaymentDetails(paymentResponse)
+            .then(function (payment){
+                // check payment.status and proceed accordingly
 
-        var options = {
-            transaction: transactionId,
-            reference: reference
-        };
-        PesaPal.getPaymentDetails(options, function (error, payment) {
-            // check payment.status and proceed accordingly
-
-            var message = "Thank you for doing business with us.";
-            res.render("message", {
-                message: message,
-                details: JSON.stringify(payment, null, 2),
-                error: error ? JSON.stringify(error, null, 2) : null
+                var message = "Thank you for doing business with us.";
+                res.render("message", {
+                    message: message,
+                    details: JSON.stringify(payment, null, 2),
+                    error: error ? JSON.stringify(error, null, 2) : null
+                });
+            })
+            .catch(function(error){
+                var message = "Oops! Something bad happended!";
+                res.render("message", {
+                    message: message,
+                    error: JSON.stringify(error, null, 2)
+                });
             });
-        });
+
 
     };
 
@@ -173,7 +182,12 @@ app.post('/pay', function (req, res, next) {
     }
 
     if(paymentData != null) {
-        PesaPal.payOrder(order, paymentData, callback);
+        PesaPal.payOrder(order, paymentData)
+            .then(processResponse)
+            .catch(function (error) {
+                res.send(error.toString());
+            });
+
     } else {
         res.render("message", {message: "Error!!!"});
     }

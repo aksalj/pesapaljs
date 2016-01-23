@@ -1,6 +1,6 @@
 {
   "name": "pesapaljs",
-  "version": "0.0.3c",
+  "version": "0.0.4",
   "description": "Integrate PesaPal into your Node application",
   "homepage": "https://github.com/aksalj/pesapaljs",
   "repository": {

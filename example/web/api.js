@@ -19,15 +19,14 @@ exports = module.exports = function (app, PesaPal) {
         var customer = new PesaPal.Customer(req.body.email, req.body.phone);
         customer.firstName = req.body.firstName;
         customer.lastName = req.body.lastName;
-        var order = new PesaPal.Order(
+        return new PesaPal.Order(
             req.body.reference,
             customer,
             req.body.description,
             req.body.amount,
             req.body.currency,
-            req.body.type);
-
-        return order;
+            req.body.type
+        );
     };
 
     app.get('/payment_status', function (req, res) {
@@ -35,13 +34,10 @@ exports = module.exports = function (app, PesaPal) {
         if(req.query.reference) options.reference = req.query.reference;
         if(req.query.transaction) options.transaction = req.query.transaction;
 
-        PesaPal.getPaymentStatus(options, function(error, status) {
-            if(error) {
-                res.status(500).send(error);
-            } else {
-                res.send({reference: options.reference, status: status});
-            }
-        });
+        PesaPal.getPaymentStatus(options)
+            .then(function (status) { res.send({reference: options.reference, status: status}); })
+            .catch(function (error) { res.status(500).send(error); });
+
     });
 
     app.get('/payment_details', function (req, res) {
@@ -50,13 +46,9 @@ exports = module.exports = function (app, PesaPal) {
         if(req.query.transaction) options.transaction = req.query.transaction;
 
 
-        PesaPal.getPaymentDetails(options, function (error, payment) {
-            if(error) {
-                res.status(500).send(error);
-            } else {
-                res.send(payment);
-            }
-        });
+        PesaPal.getPaymentDetails(options)
+            .then(function (payment) { res.send(payment); })
+            .catch(function (error) { res.status(500).send(error); });
 
     });
 
@@ -81,16 +73,18 @@ exports = module.exports = function (app, PesaPal) {
                 return;
         }
 
-        PesaPal.makeOrder(order, method, function (error, order) {
-            // Save order
-            db.saveOrder(order);
+        PesaPal.makeOrder(order, method)
+            .then(function (order) {
 
-            if(error) {
-                res.status(500).send(error.message);
-            } else {
+                // Save order
+                db.saveOrder(order);
+
                 res.send({reference: order.reference});
-            }
-        });
+
+            })
+            .catch(function(error) {
+                res.send(error.message);
+            });
     });
 
     app.post("/pay_order", function (req, res) {
@@ -123,13 +117,10 @@ exports = module.exports = function (app, PesaPal) {
         }
 
         if(paymentData != null) {
-            PesaPal.payOrder(order, paymentData, function (error, reference, transactionId) {
-                if(error) {
-                    res.status(500).send(error.message);
-                } else {
-                    res.send({reference: reference, transaction: transactionId});
-                }
-            });
+            PesaPal.payOrder(order, paymentData)
+                .then(function (paymentResponse) {res.send(paymentResponse); })
+                .catch(function (error) { res.status(500).send(error.message); });
+
         } else {
             res.status(500).send("Error!!!");
         }
