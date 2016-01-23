@@ -62,7 +62,7 @@ var options = {
     transaction: "175c6485-0948-4cb9-8d72-05a2c3f25be5" // or both.
 };
 PesaPal.getPaymentStatus(options)
-        .then(function(status)}{ /* do stuff*/ })
+        .then(function(status){ /* do stuff*/ })
         .catch(function(error){ /* do stuff*/ });
 
 PesaPal.getPaymentDetails(options)
