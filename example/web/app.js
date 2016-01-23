@@ -141,8 +141,7 @@ app.post('/pay', function (req, res, next) {
                 var message = "Thank you for doing business with us.";
                 res.render("message", {
                     message: message,
-                    details: JSON.stringify(payment, null, 2),
-                    error: error ? JSON.stringify(error, null, 2) : null
+                    details: JSON.stringify(payment, null, 2)
                 });
             })
             .catch(function(error){
