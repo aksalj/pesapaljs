@@ -38,5 +38,8 @@
     "tough-cookie": "^2.2.1",
     "urijs": "^1.17.0"
   },
-  "main": "lib/pesapal"
+  "main": "lib/pesapal",
+  "engines": {
+    "node": ">=4.2.6"
+  }
 }
