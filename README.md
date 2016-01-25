@@ -102,7 +102,10 @@ PesaPal.makeOrder(order, method) // First make the order
         // Get payment details from user, DB - like their credit card info ;) or whatever
         // ...
         
-        return Promise.resolve({order: processedOrder, paymentDetails: new PesaPal.MobileMoney("254728988983","DEWEDWED")});
+        return Promise.resolve({
+            order: processedOrder, 
+            paymentDetails: new PesaPal.MobileMoney("254728988983","DEWEDWED")
+        });
         
     }).then(function(collected) => { // then send payment request
         return PesaPal.payOrder(collected.order, collected.paymentDetails)
