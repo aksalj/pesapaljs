@@ -69,7 +69,7 @@ app.get('/payment_callback', function (req, res) {
 
 });
 
-app.get('/checkout', function (req, res, next) {
+app.get('/', function (req, res, next) {
     // TODO: Render checkout UI
     res.render("checkout", {
         reference: new Date().getTime(),
