@@ -44,6 +44,7 @@ When the `debug` option is set, `pesapaljs` will use the `demo.pesapal.com/*` en
 ```javascript
 
 // Listen for IPNs (With an express app)
+// Use localtunnel or similar tools to test IPN when running on localhost
 app.get('/ipn', PesaPal.paymentListener, function(req, res) { 
     var payment = req.payment;
     // do stuff with payment {transaction, method, status, reference}
